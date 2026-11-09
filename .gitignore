@@ -1,0 +1,16 @@
+.DS_Store
+.vercel/
+node_modules/
+site/
+work/
+test-results/
+playwright-report/
+*.log
+.env
+.env.*
+*.pem
+*.key
+auth.json
+credentials.json
+*.har
+*.zip
