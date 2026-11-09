@@ -1,0 +1,15 @@
+{
+  "name": "lianshan-agent-platform",
+  "version": "0.1.0",
+  "private": true,
+  "description": "连山：以业务本体驱动业务助手配置、验收与协作的交互原型",
+  "scripts": {
+    "start": "node app/server.js",
+    "build": "node scripts/build-site.js",
+    "preview": "node scripts/preview.js",
+    "test": "node --test tests/release.test.js"
+  },
+  "engines": {
+    "node": "22.x"
+  }
+}

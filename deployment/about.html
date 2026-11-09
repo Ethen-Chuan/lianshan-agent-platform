@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'none'; connect-src 'none'; img-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>连山 · 在线演示说明</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;background:#f5f4ef;color:#27362f;font:16px/1.8 -apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}main{max-width:820px;padding:56px 24px 80px;margin:auto}h1{font-size:36px;line-height:1.3;margin:12px 0}h2{font-size:21px;margin:30px 0 10px}p,ul,ol{margin:10px 0}a{color:#28634c;text-underline-offset:4px}.tag{font-size:13px;letter-spacing:.12em;color:#526b59}.intro{font-size:19px}.notice{background:#fffaf0;border-left:3px solid #af8553;padding:16px 20px;margin:24px 0}.actions{display:flex;flex-wrap:wrap;gap:12px;margin:24px 0}.actions a{background:#2f604a;color:#fff;border-radius:7px;padding:9px 16px;text-decoration:none}.secondary{background:#e5ece3!important;color:#294837!important}li{margin:7px 0}footer{border-top:1px solid #d8ded4;margin-top:36px;padding-top:16px;font-size:13px;color:#5c6a60}code{font-size:14px;overflow-wrap:anywhere}@media(max-width:500px){main{padding-top:28px}h1{font-size:29px}}
+  </style>
+</head>
+<body>
+  <main>
+    <div class="tag">LIANSHAN / PRODUCT DEMO</div>
+    <h1>从业务规则，到可验证的业务助手。</h1>
+    <p class="intro">连山把项目、业务本体、助手配置、案例验收与执行记录放在同一个工作空间。Orbit 是业务助手的研发入口，不是另一位固定助手。</p>
+    <div class="notice"><strong>当前是公开交互原型，不是生产系统。</strong><br>所有预置客户、会话和指标均为演示样例。请勿输入真实客户资料、未经授权的内部资料或密钥。界面里的“团队”“授权”和“发布”均属于本地模拟流程，不代表生产权限或实际部署。</div>
+    <div class="actions"><a href="./?project=AFTERSALES#orbit">体验 Orbit 业务本体</a><a class="secondary" href="./#portfolios">打开项目工作台</a></div>
+    <h2>建议用五分钟这样体验</h2>
+    <ol>
+      <li>进入售后项目，在“业务助手”中打开 Orbit。查看关系星图、业务链路、规则与动作；可以拖动、搜索和展开节点。</li>
+      <li>选中“核实保修”等业务动作，创建助手草案，检查受理词、必填字段和转人工条件。</li>
+      <li>添加演示案例并逐项确认预期。未确认或失败的案例不能通过发布验收。</li>
+      <li>验收通过后，确认加入本项目团队。到项目协作群中 @ 该助手，用示例文字验证规则分流及字段检查。</li>
+      <li>查看执行追踪与历史版本。修改业务定义不会悄悄改变已经验收的助手快照。</li>
+    </ol>
+    <h2>现在可以体验什么</h2>
+    <ul>
+      <li>项目空间、独立助手配置、图谱交互、案例验收、人工确认、版本快照与本地规则执行。</li>
+      <li>售后接待、工单草稿、会话质检、知识维护、固定样本问数与问题分析。</li>
+      <li>可调并行调度、任务状态、失败记录，以及不同项目的浏览器内数据分开保存。</li>
+    </ul>
+    <h2>这次没有上线什么</h2>
+    <ul>
+      <li>真实大模型推理、线上客服渠道、CRM/QMS 提交、多用户同步和服务端租户鉴权。</li>
+      <li>真实模型密钥输入、麦克风和浏览器联网语音识别。模型页面只允许保存不含密钥的配置草稿。</li>
+      <li>生产性能、经营成绩或模型正确率。并行数是本地调度设置，图谱动画不代表后台模型在运行。</li>
+    </ul>
+    <h2>数据会去哪里</h2>
+    <p>你修改的文字、场景和配置保存在当前浏览器的站点存储中，不在不同访客或设备间同步。媒体附件仅用于当前页面内存中的预览，不上传应用服务器。刷新后附件需要重新添加。</p>
+    <p>页面不加载第三方统计脚本，也不提供业务提交接口。静态托管服务仍可能按其自身政策记录普通网页访问日志。本说明不把“本地保存”称为绝对安全。</p>
+    <p>如需清除演示输入，可删除浏览器中这个站点的网站数据。请不要用这个原型处理正式业务。</p>
+    <footer>版本 v0.1.0 · 连山在线演示。工程源码与预置样例公开可见，不包含真实业务数据。<a href="https://github.com/Ethen-Chuan/lianshan-agent-platform" target="_blank" rel="noopener noreferrer">查看公共代码仓库与迭代说明</a></footer>
+  </main>
+</body>
+</html>

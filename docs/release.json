@@ -1,0 +1,142 @@
+{
+  "version": "0.1.0",
+  "mode": "public-static-demo",
+  "files": [
+    {
+      "filename": ".nojekyll",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "filename": "THIRD_PARTY_LICENSE.txt",
+      "sha256": "b740a1d46122672da62833e97f7e7c8a13fa85cbc7445b584b297cc00dde93db"
+    },
+    {
+      "filename": "about.html",
+      "sha256": "4478802b5cbcda65d427eb73438e5c179a630c7ab52b96665bad643ce5858bcd"
+    },
+    {
+      "filename": "analytics-data.js",
+      "sha256": "eed6264f05565b948dd8178aa0995fdf62bff5c0e16fc437097fa03b0cd0b254"
+    },
+    {
+      "filename": "analytics.css",
+      "sha256": "17ed25943a9fc49ef068ac4ab33c08ba467b1390987d8aafa2295725e9f3bf73"
+    },
+    {
+      "filename": "analytics.js",
+      "sha256": "6c7adab723b70f7d6b06c9b0e6bf23d28badb46a2b14fcbf135a787a67195361"
+    },
+    {
+      "filename": "app.js",
+      "sha256": "20f69a0e95925ee0b2fa34f4a177f573e3ea9de97351d3bd5120db9da33bda8f"
+    },
+    {
+      "filename": "icon-help.css",
+      "sha256": "cd049c0d6624a8352f53076469dab2db90046e2a9bcab700ff78498a8144dda8"
+    },
+    {
+      "filename": "icon-help.js",
+      "sha256": "465566ae5cf363f826f9284d04cfbe7cb12cc918a4a6ae33cf912f94540be71f"
+    },
+    {
+      "filename": "icons.js",
+      "sha256": "921bdf9e87c35cd33b883a6c19a84c49e0cf2a091d22f60d03d5affd31ae765f"
+    },
+    {
+      "filename": "identity.css",
+      "sha256": "60fcaf149a754bd2e4a5b79f61f63bca897629f11ae0515f370be3ebbab7cfad"
+    },
+    {
+      "filename": "identity.js",
+      "sha256": "0d5cc54df9683194cac6e08d4f8c4f1665906bc3a60efaa5f17967de0fe2c888"
+    },
+    {
+      "filename": "index.html",
+      "sha256": "2639a48f5152d8f08cab8b59799899bb567b1e05302fd9eb91c676cd27341723"
+    },
+    {
+      "filename": "manager-engine.js",
+      "sha256": "0e281bfe944106244051b7ed296373cd11cf4858d35597a405cdafd272edabb1"
+    },
+    {
+      "filename": "manager.css",
+      "sha256": "5d968223eca7b9ed897443772545dbeb87cf19d3439650d4f166d57cd9336faf"
+    },
+    {
+      "filename": "manager.js",
+      "sha256": "597edb905c5fde334d3988f89b423e9753fa5bc227ec10563faf33604a1d4eef"
+    },
+    {
+      "filename": "media-composer.css",
+      "sha256": "92847b38418f24cd7fbb4c30b2606ad79a8122ec0ffee893959b248ad9d0bd32"
+    },
+    {
+      "filename": "media-composer.js",
+      "sha256": "aa5ee2140759c22800b6e137b1fdebc086248afae6ad064abd25078b74341b76"
+    },
+    {
+      "filename": "model-connections.css",
+      "sha256": "e5eaab64ef764cedfe1dc313c1e1280e616dfe91959c4294453ae7a278ba3e08"
+    },
+    {
+      "filename": "model-connections.js",
+      "sha256": "40ff1b9fa2e643d33bdbaf546df6f0d02caa8ac84499860317deb9d0aeac10c1"
+    },
+    {
+      "filename": "model-providers.js",
+      "sha256": "d991b5a5900f855e5e2acc8133bc0192d74956b95e1c90ef14e47e58a39e4556"
+    },
+    {
+      "filename": "problem-data.js",
+      "sha256": "ec695b16cc39d085f0eeae76f1f087151c14facc0059e22c71fd78e8f899b0bc"
+    },
+    {
+      "filename": "problem-insights.css",
+      "sha256": "9ff202ab4f42a77815d957b5d4b173fa92c9010b67e06a7421e37c606ff9b34e"
+    },
+    {
+      "filename": "problem-insights.js",
+      "sha256": "ad63dc4e3b718c647310e45bb7ba808d95b15be5a073c2915ecf1f73904a3afd"
+    },
+    {
+      "filename": "project-hub.css",
+      "sha256": "e571f36ebde837921c5bcf14277231bd826220aec32e9ffb880e082ffb011726"
+    },
+    {
+      "filename": "project-hub.js",
+      "sha256": "4588c66cb66f118485805a296debd20054940ae08128cd744112b0e2f5e2354f"
+    },
+    {
+      "filename": "public-mode.js",
+      "sha256": "1a46a27982530189b194db5e383fe621b850d3a645471f1655917d91bcfe4b4b"
+    },
+    {
+      "filename": "robots.txt",
+      "sha256": "331ea9090db0c9f6f597bd9840fd5b171830f6e0b3ba1cb24dfa91f0c95aedc1"
+    },
+    {
+      "filename": "seat-assist.css",
+      "sha256": "67a628263a83deea2f29bfad728e4a32dd0f16727483642263c90e71730b1130"
+    },
+    {
+      "filename": "seat-assist.js",
+      "sha256": "05d9d74d872d8e114d89ca527d91163641cfe1bd8f40b6485c7340c99cc28232"
+    },
+    {
+      "filename": "styles.css",
+      "sha256": "379e0041d9bc9a34c2df4a0236de6a9b64619db1e32ae5157e1ba5e7527a2dc8"
+    },
+    {
+      "filename": "trace.css",
+      "sha256": "0b55935ce606d910d0c99f8da094d08e1cb22892bb55e0efc15b6106846c6a6e"
+    },
+    {
+      "filename": "trace.js",
+      "sha256": "728cf49a6bf754b5f4446ba995cb48313510271be286c60fe6627da28bcffaa8"
+    },
+    {
+      "filename": "ui.css",
+      "sha256": "ab5fe997b9b2fd9a68c1f7f2b179d5b8bd9e22fee7fd986b4536472885f1f19a"
+    }
+  ]
+}
