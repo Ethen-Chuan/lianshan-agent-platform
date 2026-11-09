@@ -83,3 +83,27 @@ test('committed Pages directory exactly matches the allowlisted build', () => {
   assert.ok(filenames.includes('.nojekyll'));
   for (const filename of filenames) assert.equal(read('docs/' + filename), read('site/' + filename));
 });
+
+test('README embeds five reviewed local screenshots without image metadata', () => {
+  const images = [...read('README.md').matchAll(/!\[([^\]]+)\]\((notes\/images\/[^)]+)\)/g)];
+  assert.equal(images.length, 5);
+  let totalBytes = 0;
+  for (const [, description, filename] of images) {
+    assert.ok(description.length >= 20);
+    assert.match(filename, /^notes\/images\/[a-z0-9-]+_redacted\.png$/);
+    const content = filesystem.readFileSync(path.join(root, filename));
+    assert.deepEqual(content.subarray(0, 8), Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]));
+    assert.ok(content.readUInt32BE(16) >= 700);
+    assert.ok(content.readUInt32BE(20) >= 400);
+    for (let offset = 8; offset + 12 <= content.length;) {
+      const length = content.readUInt32BE(offset);
+      const type = content.toString('ascii', offset + 4, offset + 8);
+      assert.ok(!['eXIf', 'tEXt', 'zTXt', 'iTXt'].includes(type), `${filename}: ${type}`);
+      offset += length + 12;
+      assert.ok(offset <= content.length);
+    }
+    totalBytes += content.length;
+  }
+  assert.ok(totalBytes < 3000000, 'Gallery should remain lightweight');
+  assert.match(read('README.md'), /不代表模型准确率或生产效果/);
+});

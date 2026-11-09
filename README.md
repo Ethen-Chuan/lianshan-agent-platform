@@ -2,14 +2,49 @@
 
 以业务本体组织对象、规则和动作，把业务需求转成可配置、可验收、可追踪的业务助手。
 
-**当前版本 v0.1.0 是可交互演示，不是生产系统。** 预置客户、项目与经营指标都是合成示例；没有接通真实大模型推理、线上客服渠道或 CRM/QMS。本仓库公开，访客无需 GitHub 登录即可查看代码，演示网页也无需登录。
+[直接体验 Orbit](https://ethen-chuan.github.io/lianshan-agent-platform/?project=AFTERSALES#orbit) · [五分钟使用指引](https://ethen-chuan.github.io/lianshan-agent-platform/about.html) · [下一轮迭代](notes/NEXT_ITERATION.md)
 
-## 入口
+> **v0.1.0 · 可交互演示，非生产系统。** 下方均为当前产品实机截图，使用独立演示会话与合成数据；没有接通真实大模型、线上客服渠道或 CRM/QMS。源码和演示网页均可免登录查看。
 
-- [在线体验 Orbit](https://ethen-chuan.github.io/lianshan-agent-platform/?project=AFTERSALES#orbit)
-- [访客使用说明](https://ethen-chuan.github.io/lianshan-agent-platform/about.html)
-- [公共代码仓库](https://github.com/Ethen-Chuan/lianshan-agent-platform)
-- 上线状态与验收结果见 [发布记录](notes/RELEASE.md)，下一轮工作见 [迭代接续](notes/NEXT_ITERATION.md)。
+## 产品界面
+
+### 01 · 在业务本体中，找到该由助手处理的动作
+
+Orbit 位于「业务助手」中。把业务对象、规则、动作和人工节点放在同一张关系图里，从「核实保修」这样的具体动作开始创建助手，而不是先写一段孤立的提示词。
+
+![连山 Orbit 工作台：业务对象、规则与动作的关系星图，右侧可从核实保修动作创建业务助手](notes/images/01-orbit-workspace_redacted.png)
+
+*支持关系星图与业务链路切换、节点拖动、搜索、渐进展开和动效暂停。截图为实际界面；动画可在在线演示中体验。*
+
+### 02 · 将规则变成可编辑、边界明确的助手配置
+
+由业务动作带入字段与规则，再定义受理关键词、必要信息、允许动作和转人工条件。业务目标、版本引用与 Prompt 草稿集中维护，保存配置不等于生产发布。
+
+![助手配置细节：业务目标、受理关键词、必要字段、允许动作、转人工规则、本体版本与 Prompt 草稿](notes/images/02-assistant-config_redacted.png)
+
+### 03 · 用案例验证处理边界，而不只看回答是否流畅
+
+人工确认每条案例的预期，再执行本地验收。结果同时保留输入、预期、实际输出和处理步骤；未确认、失败或过期的验收不能用于加入团队。
+
+![案例验收结果：三条演示案例通过，展开后可核对输入、人工预期、信息摘要和逐步处理记录](notes/images/03-case-evaluation_redacted.png)
+
+*图中的「3 / 3 通过」仅对应这三条演示案例的本地规则验收，不代表模型准确率或生产效果。*
+
+### 04 · 冻结已验收版本，让后续迭代有据可查
+
+人工确认后加入本项目团队，记录配置快照与验收引用。继续研发会影响后续版本，而不是悄悄改写已验收的历史记录。
+
+![助手版本页：V1 本地版本、人工确认说明、冻结的业务配置及验收记录引用](notes/images/04-version-snapshot_redacted.png)
+
+### 05 · 在项目群中调用助手，把结果交给人核对
+
+在协作群中 @ 核实保修助手，使用示例信息完成受理与摘要准备。侧栏展示团队角色和定制助手任务，结果可继续查看执行记录；不会自动向客户发送或向业务系统提交。
+
+![项目协作群：项目助手分派、核实保修助手整理信息、待人工核对的结果及团队任务侧栏](notes/images/05-team-collaboration_redacted.png)
+
+截图记录与公开范围见 [产品图说明](notes/PRODUCT_GALLERY.md)。上线验收结果见 [发布记录](notes/RELEASE.md)。
+
+## 页面入口
 
 - 根页面：项目选择与整理。
 - `?project=AFTERSALES#agents`：售后项目的业务助手，Orbit 入口在这里。
@@ -81,6 +116,8 @@ tests/               发布边界、源码语法和产物一致性检查
 notes/source-notes/  原项目的功能与验收说明，保留其原始上下文
 notes/RELEASE.md     本次部署、来源和验收状态
 notes/NEXT_ITERATION.md  下一轮迭代的建议与验收标准
+notes/images/        README 产品截图，不进入演示站点构建
+notes/PRODUCT_GALLERY.md  截图来源、能力边界与复核记录
 docs/                自动生成的公开站点，提交后供 Pages 发布
 site/                生成的公开静态文件，不提交 Git
 ```
