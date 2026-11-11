@@ -69,6 +69,7 @@ test('fit includes width and height, zoom readout matches, and hidden relation l
 test('full names have content-derived space, all captions sit outside nodes, and star nodes have top breathing room',()=>{
   const value=surface();const model=value.window.OrbitOntology.data();model.nodes[0].name='这里是一个需要完整显示且不能出现上下遮挡的业务定义名称';const graph=value.window.OrbitBusiness.starLayout(model,{focusId:model.nodes[0].id});
   assert.ok(graph.nodes.every(node=>node.height>=186&&node.y>=76&&node.x>=24));
+  assert.ok(value.map.metrics([{name:'W'.repeat(30)}]).height>=192);assert.equal(value.map.excerpt('W'.repeat(50)).length,30);
   for(const link of graph.links.filter(entry=>entry.labelPosition))for(const node of graph.nodes){const label=link.labelPosition;assert.ok(label.x+label.width/2<=node.x||label.x-label.width/2>=node.x+node.width||label.y+15<=node.y||label.y-15>=node.y+node.height);}
   const css=fs.readFileSync(path.join(__dirname,'../app/orbit-map.css'),'utf8');assert.match(css,/flex:0 0 auto/);assert.match(css,/strong\{[^}]*height:auto[^}]*white-space:normal;overflow:visible/);assert.match(css,/prefers-reduced-motion:reduce/);assert.match(css,/forced-colors:active/);
 });

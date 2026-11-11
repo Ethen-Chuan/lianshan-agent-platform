@@ -1,7 +1,7 @@
 window.OrbitMap=(()=>{
   const layouts=new WeakMap();const contexts=new Map();const mounted=new WeakSet();const animations=new WeakMap();
   let host;let active=null;let suppressed=null;let frame=null;
-  const units=text=>Array.from(String(text||'')).reduce((total,character)=>total+(/[\u0000-\u007f]/.test(character)?.58:1),0);
+  const units=text=>Array.from(String(text||'')).length;
   function excerpt(text){let result='';for(const character of String(text||'')){if(units(result+character)>29)return result+'…';result+=character;}return result;}
   function metrics(nodes){return {width:224,height:Math.max(164,...nodes.map(node=>120+Math.max(1,Math.ceil(units(node.name)/10))*24))};}
   function storage(state,key){if(!layouts.has(state))layouts.set(state,new Map());const saved=layouts.get(state);if(!saved.has(key))saved.set(key,new Map());return saved.get(key);}
