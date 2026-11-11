@@ -9,7 +9,7 @@ window.HubIdentity = (() => {
   };
   const types = {store:'服务门店',technician:'技术人员',customer:'客户 · 类型未标注',staff:'人工客服',archive:'只读历史资料'};
   const workers = {
-    manager:{label:'项目助手 · AI',tone:'clay',art:'manager'},
+    manager:{label:'连小山 · 协调助手',tone:'teal',art:'lianxiaoshan'},
     service:{label:'售后接待助手 · AI',tone:'teal',art:'service'},
     knowledge:{label:'知识查找 · AI',tone:'amber',art:'knowledge'},
     ticket:{label:'工单填写助手 · AI',tone:'blue',art:'ticket'},
@@ -33,6 +33,24 @@ window.HubIdentity = (() => {
 
   function frame(palette,content,round=false) {
     return `<svg class="identity-art" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" aria-hidden="true" focusable="false"><rect x="1" y="1" width="62" height="62" rx="${round?31:17}" fill="${palette.paper}" stroke="${palette.edge}"/><circle cx="46" cy="18" r="10" fill="${palette.light}" opacity=".22"/>${content}</svg>`;
+  }
+
+  function mountainCompanion() {
+    return `<svg class="identity-art" data-mascot="lianxiaoshan" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" aria-hidden="true" focusable="false">
+      <rect x="1" y="1" width="62" height="62" rx="20" fill="#f5f3e8" stroke="#d8dfcc"/>
+      <ellipse cx="32" cy="55" rx="20" ry="3" fill="#dce3ca"/>
+      <path d="M10 42 18 26Q22 18 27 25L29 28 36 16Q40 9 44 17L54 39Q62 54 46 55H21Q5 55 10 42Z" fill="#b6ce97" stroke="#587656" stroke-width="1.8" stroke-linejoin="round"/>
+      <path d="m30 26 6-10q4-7 8 1l5 10q-3 2-6-1l-4 3-4-3q-2 3-5 0Z" fill="#fff4d8"/>
+      <path d="m16 32 2-6q4-8 9-1l2 3-3 3-4-2-3 4Z" fill="#dce8c5"/>
+      <path d="M14 46q-3 3-4-1m44-4q5-3 4-7" stroke="#587656" stroke-width="2.2" stroke-linecap="round"/>
+      <ellipse cx="21" cy="43" rx="4" ry="2.6" fill="#e9ae8e"/>
+      <ellipse cx="45" cy="43" rx="4" ry="2.6" fill="#e9ae8e"/>
+      <ellipse cx="26" cy="37.5" rx="2.2" ry="2.9" fill="#344c37"/>
+      <ellipse cx="40" cy="37.5" rx="2.2" ry="2.9" fill="#344c37"/>
+      <circle cx="26.6" cy="36.6" r=".65" fill="#fff7e5"/>
+      <circle cx="40.6" cy="36.6" r=".65" fill="#fff7e5"/>
+      <path d="M29.5 43q3.5 4 7 0" stroke="#344c37" stroke-width="1.9" stroke-linecap="round"/>
+    </svg>`;
   }
 
   function store(palette,variant) {
@@ -92,15 +110,67 @@ window.HubIdentity = (() => {
   }
 
   function worker(identifier,size='md') {
+    const custom=window.PortfolioHub?.navProject()?.workspace?.agents?.find(agent=>agent.id===identifier);
+    if(custom)return assistant({...custom,avatar:custom.releases?.find(release=>release.version===custom.activeVersion)?.config.avatar||custom.avatar},size);
     const worker=owns(workers,identifier)?workers[identifier]:{label:'自动化助手',tone:'slate',art:'manager'};
-    return wrap(symbol(palettes[worker.tone],worker.art),{...worker,type:'assistant',size});
+    const art=worker.art==='lianxiaoshan'?mountainCompanion():symbol(palettes[worker.tone],worker.art);
+    return wrap(art,{...worker,type:'assistant',size,label:identifier==='manager'?(window.ProjectStudio?.coordinatorName?.()||'连小山')+' · 协调助手':worker.label});
   }
 
+  const assistantArts={service:'服务沟通',ticket:'业务办理',quality:'核验守护',analytics:'数据分析',knowledge:'知识向导',manager:'协作协调'};
+  const extraArts={research:['研究检索','search'],engineer:['技术工程','terminal-2'],operations:['运营管家','adjustments-horizontal'],planner:['计划统筹','calendar'],support:['客户支持','headset'],security:['安全审核','shield-lock'],archive:['资料管理','archive'],workflow:['流程编排','route'],insights:['洞察观察','eye'],writer:['内容创作','pencil'],store:['门店服务','building-store'],delivery:['交付跟进','flag'],audit:['案例验收','checklist'],integrations:['系统连接','plug-connected'],data:['数据管理','database'],goals:['目标管理','target'],ideas:['灵感探索','sparkles'],cloud:['云端服务','cloud']};
+  const characterArts={fox:['小狐','🦊'],panda:['熊猫','🐼'],owl:['猫头鹰','🦉'],cat:['小猫','🐱'],dog:['小狗','🐶'],penguin:['企鹅','🐧'],whale:['鲸鱼','🐳'],rabbit:['小兔','🐰'],robot:['机器人','🤖'],seed:['新芽','🌱'],mountain:['山峰','⛰️'],compass:['指南针','🧭']};
+  for(const [key,[label]] of Object.entries({...extraArts,...characterArts}))assistantArts[key]=label;
+  const assistantTones={teal:'苔绿',blue:'雾蓝',amber:'麦金',plum:'灰紫',clay:'陶土',slate:'岩灰'};
+  function appearance(value={},seed='assistant') {
+    return {art:owns(assistantArts,value?.art)?value.art:Object.keys(assistantArts)[hash(seed)%6],tone:owns(palettes,value?.tone)?value.tone:Object.keys(assistantTones)[hash(seed+'tone')%6]};
+  }
+  function assistant(item={},size='md') {
+    const identity=appearance(item.avatar,item.id||item.name||'assistant');
+    const palette=palettes[identity.tone];let art;
+    if(owns(characterArts,identity.art))art=frame(palette,`<text x="32" y="44" text-anchor="middle" font-size="34" fill="${palette.ink}" font-family="Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji, sans-serif">${characterArts[identity.art][1]}</text>`);
+    else if(owns(extraArts,identity.art)){const icon=window.HUB_ICONS?.[extraArts[identity.art][1]];art=frame(palette,`<g transform="translate(14 14) scale(1.5)" color="${palette.ink}" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6">${icon?icon.replace(/<svg[^>]*>|<\/svg>/g,''):'<path d="M4 5h16v14H4zM8 10h8m-8 4h5" fill="none" stroke="currentColor"/>'}</g>`);}
+    else art=symbol(palette,identity.art);
+    return wrap(art,{type:'assistant',tone:identity.tone,size,label:(item.name||'新业务助手')+' · '+assistantArts[identity.art]+'头像'});
+  }
+  function gallery(identity) {
+    return `<div class="avatar-gallery-body">${[['业务职责',Object.keys(assistantArts).filter(key=>!owns(characterArts,key))],['个性伙伴',Object.keys(characterArts)]].map(([label,keys])=>`<section><h4>${label}</h4><div class="avatar-art-grid" role="group" aria-label="${label}头像">${keys.map(key=>`<button type="button" data-avatar-art="${key}" aria-pressed="${identity.art===key}" title="${assistantArts[key]}">${assistant({name:assistantArts[key],avatar:{art:key,tone:identity.tone}},'md')}<span>${assistantArts[key]}</span></button>`).join('')}</div></section>`).join('')}<div class="avatar-color-grid" role="group" aria-label="头像配色">${Object.entries(assistantTones).map(([tone,label])=>`<button type="button" data-avatar-tone="${tone}" aria-pressed="${identity.tone===tone}" aria-label="${label}" title="${label}" style="--avatar-color:${palettes[tone].main}"><span></span>${label}</button>`).join('')}</div></div>`;
+  }
+  function picker(item={},prefix='studio') {
+    const identity=appearance(item.avatar,item.id||item.name||'assistant');
+    return `<div class="assistant-avatar-picker" data-avatar-picker><span class="assistant-avatar-preview">${assistant({...item,avatar:identity},'md')}</span><label>头像图案<select name="avatarArt" id="${escape(prefix)}-avatar-art">${Object.entries(assistantArts).map(([value,label])=>`<option value="${value}" ${identity.art===value?'selected':''}>${label}</option>`).join('')}</select></label><label>头像配色<select name="avatarTone" id="${escape(prefix)}-avatar-tone">${Object.entries(assistantTones).map(([value,label])=>`<option value="${value}" ${identity.tone===value?'selected':''}>${label}</option>`).join('')}</select></label><details class="avatar-gallery"><summary>浏览 ${Object.keys(assistantArts).length} 款头像 <span>职责图案 / 个性伙伴</span></summary>${gallery(identity)}</details></div>`;
+  }
+
+  const knowledgeArts={knowledge:'使用手册',fault:'故障排查',software:'软件说明',quality:'服务规范',ticket:'操作清单',service:'常见问答',document:'说明文档',archive:'资料归档',research:'排查检索',workflow:'处理流程',integrations:'连接配置',operations:'参数设置'};
+  const knowledgeCategories={'故障排查':{art:'fault',tone:'clay'},'服务规范':{art:'quality',tone:'plum'},'操作咨询':{art:'knowledge',tone:'amber'},'软件问题':{art:'software',tone:'blue'},'其他知识':{art:'document',tone:'slate'}};
+  function knowledgeAppearance(entry={}) {
+    const fallback=owns(knowledgeCategories,entry.category)?knowledgeCategories[entry.category]:knowledgeCategories['其他知识'];
+    return {art:owns(knowledgeArts,entry.appearance?.art)?entry.appearance.art:fallback.art,tone:owns(palettes,entry.appearance?.tone)?entry.appearance.tone:fallback.tone};
+  }
   function knowledge(entry={},size='md') {
-    const categories={'故障排查':{art:'fault',tone:'clay'},'服务规范':{art:'quality',tone:'plum'},'操作咨询':{art:'knowledge',tone:'amber'},'软件问题':{art:'software',tone:'blue'}};
-    const category=owns(categories,entry.category)?categories[entry.category]:{art:'document',tone:'slate'};
-    return wrap(symbol(palettes[category.tone],category.art),{type:'knowledge',tone:category.tone,size,label:entry.category?String(entry.category)+'知识':'知识文档'});
+    const identity=knowledgeAppearance(entry);const palette=palettes[identity.tone];
+    let art=symbol(palette,identity.art);
+    if(owns(extraArts,identity.art)){
+      const glyph=window.HUB_ICONS?.[extraArts[identity.art][1]];
+      art=frame(palette,`<g transform="translate(14 14) scale(1.5)" color="${palette.ink}" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6">${glyph?glyph.replace(/<svg[^>]*>|<\/svg>/g,''):''}</g>`);
+    }
+    return wrap(art,{type:'knowledge',tone:identity.tone,size,label:knowledgeArts[identity.art]+'图标'});
+  }
+  function knowledgePicker(entry={}) {
+    const identity=knowledgeAppearance(entry);
+    return `<fieldset class="knowledge-appearance"><legend>识别图标 <span>12 款</span></legend><div class="knowledge-icon-options" role="group" aria-label="选择知识图标">${Object.entries(knowledgeArts).map(([art,label])=>`<button type="button" data-action="knowledge-icon" data-value="${art}" aria-pressed="${identity.art===art}" aria-label="${label}" title="${label}">${knowledge({appearance:{art,tone:identity.tone}},'sm')}<span>${label}</span></button>`).join('')}</div><div class="knowledge-tone-options" role="group" aria-label="选择图标配色">${Object.entries(assistantTones).map(([tone,label])=>`<button type="button" data-action="knowledge-tone" data-value="${tone}" aria-pressed="${identity.tone===tone}" aria-label="${label}" title="${label}" style="--knowledge-swatch:${palettes[tone].main}"><span aria-hidden="true"></span>${label}</button>`).join('')}</div></fieldset>`;
   }
 
-  return {avatar,worker,knowledge,describe,channelBadge};
+  document.addEventListener('change',event=>{
+    const picker=event.target.closest('[data-avatar-picker]');if(!picker)return;
+    const avatar=appearance({art:picker.querySelector('[name="avatarArt"]').value,tone:picker.querySelector('[name="avatarTone"]').value});
+    picker.querySelector('.assistant-avatar-preview').innerHTML=assistant({avatar},'md');
+    const active=document.activeElement;const art=active?.dataset.avatarArt;const tone=active?.dataset.avatarTone;
+    const galleryTop=picker.querySelector('.avatar-gallery-body').scrollTop;
+    picker.querySelector('.avatar-gallery-body').outerHTML=gallery(avatar);
+    picker.querySelector('.avatar-gallery-body').scrollTop=galleryTop;
+    if(art)picker.querySelector(`[data-avatar-art="${art}"]`)?.focus({preventScroll:true});if(tone)picker.querySelector(`[data-avatar-tone="${tone}"]`)?.focus({preventScroll:true});
+  });
+  document.addEventListener('click',event=>{const option=event.target.closest('[data-avatar-art],[data-avatar-tone]');if(!option)return;event.preventDefault();const picker=option.closest('[data-avatar-picker]');const select=picker.querySelector(`[name="${option.dataset.avatarArt?'avatarArt':'avatarTone'}"]`);select.value=option.dataset.avatarArt||option.dataset.avatarTone;select.dispatchEvent(new Event('change',{bubbles:true}));});
+  return {avatar,worker,knowledge,describe,channelBadge,assistant,appearance,picker,knowledgeAppearance,knowledgePicker,knowledgeCategories:Object.keys(knowledgeCategories)};
 })();

@@ -1,7 +1,8 @@
 window.HubIconHelp = (() => {
   const navigation={
     'project-assistant':['项目助手设置','为当前项目设置业务范围、成员授权与配置版本，不影响其他项目。'],
-    orbit:['Orbit 助手研发','在当前项目配置场景、核对案例并验收，确认后纳入本地团队。'],
+    orbit:['Orbit · 业务流程','拖拽设计处理步骤，配置助手并核对案例，验收后加入本项目团队。'],
+    ontology:['业务本体 · Ontology','维护共享的对象、字段与规则，查看助手引用和本地规则预览。流程设计在 Orbit 中完成。'],
     'custom-assistant':['定制业务助手','查看这位助手的执行记录、问题案例、回归与历史版本。'],
     portfolios:['项目集','先选择所属项目，再进入项目内的助手与业务工作区。'],
     portfolio:['项目集','在项目集中查找项目；未选择项目时不显示业务助手导航。'],
@@ -12,7 +13,8 @@ window.HubIconHelp = (() => {
     forms:['CRM / QMS 填单','提取客户明确提供的信息，核对字段与缺项，保存本地模拟回执。'],
     scoring:['会话评分','按版本化标准复核完整对话，记录分数、扣分证据和整改建议。'],
     manager:['项目助手','交代任务，查看助手分工、执行进度与待确认结果。'],
-    workspace:['客服收件箱','查看各渠道会话，接管客户问题并准备回复。'],
+    workspace:['客服工作台','接待客户，核对资料并处理工单；关联演练可查看同一会话的客户视角。'],
+    customer:['客户体验 · 模拟','从客户视角发起咨询、转人工、继续反馈和确认解决；只在本地保存。'],
     tickets:['工单记录','查看报修工单、处理状态与关联客户会话。'],
     agents:['业务助手','管理助手职责、运行策略和独立模型连接。'],
     quality:['发送风险复核','查看被拦截的回复，核对风险并记录复核意见。'],
@@ -22,7 +24,8 @@ window.HubIconHelp = (() => {
     settings:['平台设置','查看演示范围和数据保护说明，或重置本地演示。']
   };
   const actions={
-    'assistant-directory':['业务助手','打开负责接待、工单、质检与大盘的助手目录；各自管理业务台账和版本。'],
+    'assistant-directory':['业务助手','配置接待与填单，复核发送风险；有新业务规则时进入 Orbit 设计。'],
+    'customer-preview':['客户自助预览','查看本次交接的客户侧消息，也可选择场景开始新的本地演练。'],
     'assistant-business':['业务工作区','进入这位助手负责的业务页面，不创建新任务或修改数据。'],
     'reporter-send':['向大盘助手提问','按所选日期和渠道查询本地固定样本，保留依据与执行记录；不调用真实模型。'],
     'reporter-open':['查看大盘分析','打开群里这次分析的原始结果、统计范围及下钻入口。'],
@@ -47,7 +50,7 @@ window.HubIconHelp = (() => {
     'manager-send':['发送任务','把输入内容交给项目助手处理。Enter 发送，Shift + Enter 换行；对客发送仍需确认。'],
     'manager-close-drawer':['关闭侧栏','收起任务或助手详情，不取消正在运行的任务。'],
     'manager-thread':['打开历史对话','返回这段对话及其关联任务，保留当前未发送草稿。'],
-    'manager-open':['查看任务详情','查看当前任务的分工、步骤、卡点和执行记录。'],
+    'manager-open':['查看任务详情','查看当前任务的分工、步骤、异常和执行记录。'],
     'manager-traces':['任务执行记录','查看这项任务的工具调用、返回结果与异常。'],
     'ui-navigator':['查找功能','搜索并跳转到工作台功能。快捷键：⌘ K / Ctrl + K。'],
     'notifications':['通知与待办','查看本地工作区中等待处理的通知与事项。'],
@@ -114,6 +117,14 @@ window.HubIconHelp = (() => {
     const copy=element.cloneNode(true);
     copy.querySelectorAll('svg,.icon-action-caption,.sr-only,kbd').forEach(child=>child.remove());
     return clean(copy.textContent);
+  }
+
+  function needsHelp(element){
+    if(!element||element.closest('[inert]'))return false;
+    if(element.matches('[disabled],[aria-disabled="true"]'))return true;
+    const navigationLabel=element.querySelector('.nav-label');
+    if(navigationLabel)return !navigationLabel.getClientRects().length;
+    return !visibleText(element);
   }
 
   function describe(element){
@@ -183,7 +194,7 @@ window.HubIconHelp = (() => {
   function sync(){
     if(!popup)return;
     document.querySelectorAll('#app button,#overlay-root button,#manager-case,.manager-context-select,.channel-mark').forEach(annotate);
-    if(active&&(!active.isConnected||active.closest('[inert]')))hide();
+    if(active&&(!active.isConnected||!needsHelp(active)))hide();
     if(active&&!popup.hidden){const detail=describe(active);if(detail){popup.querySelector('strong').textContent=detail[0];popup.querySelector('p').textContent=detail[1];popup.querySelector('p').hidden=!detail[1];place();}}
   }
 
@@ -223,7 +234,7 @@ window.HubIconHelp = (() => {
 
   function show(element){
     clearTimeout(hideTimer);clearTimeout(showTimer);
-    if(!element?.isConnected||element===dismissed||element.closest('[inert]'))return;
+    if(!element?.isConnected||element===dismissed||!needsHelp(element))return;
     const detail=describe(element);
     if(!detail)return;
     if(active!==element)removeDescription(active);
@@ -240,7 +251,7 @@ window.HubIconHelp = (() => {
     const element=node.closest('button,select,.manager-context-select,.channel-mark');
     if(!element||element.closest('[inert]'))return null;
     annotate(element);
-    return element.hasAttribute('data-icon-help')?element:null;
+    return element.hasAttribute('data-icon-help')&&needsHelp(element)?element:null;
   }
 
   function leave(){
@@ -291,5 +302,5 @@ window.HubIconHelp = (() => {
   function schedule(){if(!popup)return;cancelAnimationFrame(syncFrame);syncFrame=requestAnimationFrame(sync);}
   function dispose(){hide();observer?.disconnect();listeners?.abort();cancelAnimationFrame(syncFrame);popup?.remove();popup=null;hovered=null;focused=null;dismissed=null;}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
-  return {init,sync,hide,describe,dispose};
+  return {init,sync,hide,describe,needsHelp,dispose};
 })();

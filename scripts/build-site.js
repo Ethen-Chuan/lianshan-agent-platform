@@ -1,6 +1,7 @@
 const filesystem = require('node:fs/promises');
 const path = require('node:path');
 const crypto = require('node:crypto');
+const {publicAssets} = require('./public-assets');
 
 const projectRoot = path.resolve(__dirname, '..');
 const appDirectory = path.join(projectRoot, 'app');
@@ -9,7 +10,7 @@ const pagesDirectory = path.join(projectRoot, 'docs');
 
 async function build() {
   const originalHtml = await filesystem.readFile(path.join(appDirectory, 'index.html'), 'utf8');
-  const assets = [...new Set([...originalHtml.matchAll(/<(?:script|link)\b[^>]*?(?:src|href)="([^"]+)"/g)].map(match => match[1]))];
+  const assets = publicAssets(originalHtml);
   for (const asset of assets) {
     if (!/^[a-z0-9-]+\.(?:js|css)$/.test(asset)) throw new Error(`Unexpected public asset: ${asset}`);
     const metadata = await filesystem.lstat(path.join(appDirectory, asset));

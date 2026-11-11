@@ -1,0 +1,73 @@
+.dialog.knowledge-editor-dialog{width:1040px;max-height:92dvh;background:var(--paper,#fffdf9)}
+.knowledge-editor-dialog .dialog-head{padding:24px 28px 20px;flex-shrink:0}
+.knowledge-editor-dialog .dialog-head h2{font-size:22px;color:#33412f}
+.knowledge-editor-dialog .dialog-content{padding:0}
+.knowledge-editor-dialog .dialog-footer{flex-shrink:0;padding:18px 28px;background:#f5f6ef}
+.knowledge-editor-dialog .dialog-footer .hint{max-width:38ch;font-size:12px;line-height:1.7;color:#65715d}
+.knowledge-editor-layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(320px,1fr);align-items:start;min-width:0}
+.knowledge-editor-fields{display:grid;gap:22px;padding:26px 28px 20px;min-width:0}
+.knowledge-section-intro h3{font-size:15px;line-height:1.6;margin:0;color:#35452f;font-weight:600}
+.knowledge-section-intro p{font-size:12px;line-height:1.8;margin:5px 0 0;color:#728068}
+.knowledge-editor-fields .field{gap:8px;min-width:0}
+.knowledge-editor-fields .field label{font-size:13px;color:#43563a;font-weight:500}
+.knowledge-editor-fields .field label span{color:#926a4a}
+.knowledge-editor-fields .field :is(input,select,textarea){font:inherit;font-size:13px;line-height:1.8;padding:10px 12px;border:1px solid #cfd8c6;border-radius:6px;background:#fffef9;color:#35482f;min-width:0;transition:border-color .15s}
+.knowledge-editor-fields .field :is(input,select){min-height:44px}
+.knowledge-editor-fields .field textarea{min-height:236px;resize:vertical}
+.knowledge-editor-fields .field :is(input,textarea)::placeholder{color:#849078;font-size:12px}
+.knowledge-editor-fields .field :is(input,select,textarea):focus-visible{outline:2px solid #60764f;outline-offset:2px;border-color:#60764f}
+.knowledge-editor-fields .field [aria-invalid=true]{border-color:#ac5744}
+.knowledge-editor-fields .field small{font-size:11px;line-height:1.8;color:#76846b}
+.knowledge-field-pair{display:grid;grid-template-columns:minmax(110px,.8fr) minmax(0,1.3fr);gap:16px}
+.knowledge-label-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.knowledge-label-row>span{font-size:11px;color:#77836c;font-variant-numeric:tabular-nums}
+.knowledge-extra-fields{border-top:1px solid #dde3d6;padding-top:16px}
+.knowledge-extra-fields>summary{font-size:13px;color:#516744;cursor:pointer;line-height:1.8}
+.knowledge-extra-fields>summary>span{font-size:11px;color:#7e8a74;margin-left:8px}
+.knowledge-extra-fields>div{display:grid;gap:16px;margin-top:16px}
+.knowledge-extra-fields>p{color:#76846b;font-size:11px;line-height:1.8;margin:10px 0 0}
+.knowledge-editor-error{font-size:12px;line-height:1.8;color:#9c4639;margin:0;overflow-wrap:anywhere}
+.knowledge-editor-error:empty{display:none}
+.knowledge-editor-aside{position:sticky;top:0;min-width:0;align-self:start;padding:26px 24px;background:#f2f4eb;border-left:1px solid #e0e5d8}
+.knowledge-preview-heading{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:14px;color:#506144;font-size:12px}
+.knowledge-preview-heading>span:last-child{color:#7a876f;font-size:11px}
+.knowledge-preview-card{padding:20px 16px;border:1px solid #dce3d2;border-radius:8px;background:#fffef8;min-width:0}
+.knowledge-preview-card .knowledge-title-cell{min-width:0;align-items:flex-start;gap:12px}
+.knowledge-preview-card .knowledge-title-link{display:block;font-size:14px;font-weight:550;color:#31422f;cursor:default;line-height:1.7;overflow-wrap:anywhere}
+.knowledge-preview-card .knowledge-title-link:hover{text-decoration:none}
+.knowledge-preview-card .knowledge-meta{font-size:10px;gap:5px 8px}
+.knowledge-preview-card dl{display:grid;gap:12px;margin:18px 0 0;padding-top:16px;border-top:1px solid #e7ebdf}
+.knowledge-preview-card dl>div{display:grid;grid-template-columns:82px minmax(0,1fr);align-items:start;gap:12px}
+.knowledge-preview-card dt{font-size:11px;color:#7b876f;line-height:1.8}
+.knowledge-preview-card dd{font-size:12px;line-height:1.8;margin:0;color:#526347;overflow-wrap:anywhere;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.knowledge-preview-excerpt{padding:16px 2px 20px;border-bottom:1px solid #dae1cf}
+.knowledge-preview-excerpt>span{font-size:11px;color:#79866e}
+.knowledge-preview-excerpt>p{font-size:12px;line-height:1.85;color:#5f7053;white-space:pre-wrap;overflow-wrap:anywhere;margin:7px 0 0;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.knowledge-appearance{padding:0;border:0;margin:20px 0 0;min-width:0}
+.knowledge-appearance>legend{font-size:13px;color:#425a36;padding:0;margin-bottom:12px}
+.knowledge-appearance>legend>span{font-size:11px;color:#7a876d;margin-left:6px}
+.knowledge-icon-options{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.knowledge-icon-options>button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;min-width:0;min-height:71px;padding:7px 3px;background:transparent;border:1px solid transparent;border-radius:6px;color:#607351;cursor:pointer;transition:background .15s,border-color .15s}
+.knowledge-icon-options>button>span:last-child{font-size:11px;line-height:1.5}
+.knowledge-icon-options>button:hover{background:#e6ecdc}
+.knowledge-icon-options>button[aria-pressed=true]{border-color:#758b61;background:#e5edd9;color:#354d29;box-shadow:0 0 0 1px #758b61}
+.knowledge-tone-options{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;margin-top:16px;padding-top:16px;border-top:1px solid #dce3d2}
+.knowledge-tone-options>button{display:flex;align-items:center;flex-direction:column;gap:7px;min-height:49px;border:1px solid transparent;border-radius:5px;padding:6px 2px;color:#607351;font-size:10px;background:transparent;cursor:pointer}
+.knowledge-tone-options>button>span{width:18px;height:18px;border-radius:50%;background:var(--knowledge-swatch)}
+.knowledge-tone-options>button[aria-pressed=true]{background:#e4ebda;border-color:#8da17c;color:#3c552f}
+.knowledge-tone-options>button[aria-pressed=true]>span{outline:2px solid var(--knowledge-swatch);outline-offset:3px}
+.knowledge-appearance-note{font-size:11px;line-height:1.8;color:#7a876e;margin:14px 0 0}
+.knowledge-editor-dialog :is(button,summary):focus-visible{outline:2px solid #526d3f;outline-offset:3px}
+.knowledge-detail-identity{display:flex;align-items:center;gap:14px;margin-bottom:24px}
+.knowledge-detail-identity>div{display:grid;gap:6px;flex:1;min-width:0}
+.knowledge-detail-identity strong{font-size:14px;color:#45573c;font-weight:550}
+.knowledge-detail-identity span:not(.identity-avatar){font-size:12px;color:#78836e}
+.knowledge-detail-meta{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:0 0 24px}
+.knowledge-detail-meta dt{font-size:12px;color:#7a8670;margin-bottom:6px}
+.knowledge-detail-meta dd{font-size:13px;line-height:1.8;color:#435b38;margin:0;overflow-wrap:anywhere}
+.knowledge-detail-content{font-size:14px;line-height:1.95;white-space:pre-wrap;overflow-wrap:anywhere;color:#42573a;border-top:1px solid #dce3d3;padding:22px 0;margin-bottom:18px}
+.knowledge-runtime-note{font-size:12px;line-height:1.8;color:#7a866f;margin:18px 0 0}
+.knowledge-detail-dialog .dialog-head h2{overflow-wrap:anywhere}
+@media(max-width:780px){.knowledge-editor-layout{grid-template-columns:minmax(0,1fr)}.knowledge-editor-fields{padding:22px}.knowledge-editor-aside{position:static;border-left:0;border-top:1px solid #e0e5d8;padding:22px}.knowledge-icon-options{grid-template-columns:repeat(6,minmax(0,1fr))}.knowledge-editor-dialog .dialog-footer{padding:16px 22px}.knowledge-editor-dialog .dialog-footer .hint{font-size:11px;max-width:none}.knowledge-preview-excerpt>p{-webkit-line-clamp:3}}
+@media(max-width:440px){.knowledge-editor-dialog .dialog-head{padding:20px}.knowledge-editor-dialog .dialog-head h2{font-size:20px}.knowledge-editor-fields,.knowledge-editor-aside{padding:20px}.knowledge-icon-options{grid-template-columns:repeat(4,minmax(0,1fr))}.knowledge-field-pair{grid-template-columns:minmax(0,1fr)}.knowledge-editor-dialog .dialog-footer{gap:10px;padding:14px 20px}.knowledge-editor-dialog .dialog-footer>.row{width:100%;justify-content:flex-end}.knowledge-editor-dialog .dialog-footer .hint{width:100%}.knowledge-detail-meta{grid-template-columns:minmax(0,1fr)}}
+@media(prefers-reduced-motion:reduce){.knowledge-editor-dialog,.knowledge-editor-dialog *{animation:none!important;transition:none!important}}

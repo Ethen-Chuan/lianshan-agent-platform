@@ -2,12 +2,12 @@ window.SeatAssist = (() => {
   let host;
   const sessions = new Map();
   const phrases = [
-    {id:'more',label:'补充现象',group:'信息补充',text:'请再描述一下具体情况，我接着帮您看。'},
-    {id:'menu',label:'确认菜单',group:'信息补充',text:'您现在看到哪些菜单选项？'},
-    {id:'steps',label:'确认已做操作',group:'信息补充',text:'方便说一下已经试过哪些方法、操作后有什么变化吗？'},
-    {id:'wait',label:'说明等待',group:'进度反馈',text:'还没有新的处理结果。'},
-    {id:'confirm',label:'确认恢复',group:'服务确认',text:'现在恢复正常了吗？'},
-    {id:'other',label:'确认其他问题',group:'服务确认',text:'还有其他需要一起确认的问题吗？'}
+    {id:'more',label:'补充现象',keywords:['现象','具体情况','补充'],group:'信息补充',text:'请再描述一下具体情况，我接着帮您看。'},
+    {id:'menu',label:'确认菜单',keywords:['菜单','选项'],group:'信息补充',text:'您现在看到哪些菜单选项？'},
+    {id:'steps',label:'确认已做操作',keywords:['操作','试过','排查'],group:'信息补充',text:'方便说一下已经试过哪些方法、操作后有什么变化吗？'},
+    {id:'wait',label:'说明等待',keywords:['等待','进度','结果'],group:'进度反馈',text:'还没有新的处理结果。'},
+    {id:'confirm',label:'确认恢复',keywords:['恢复','正常'],group:'服务确认',text:'现在恢复正常了吗？'},
+    {id:'other',label:'确认其他问题',keywords:['其他问题','其他'],group:'服务确认',text:'还有其他需要一起确认的问题吗？'}
   ];
   const escape = value => host.escape(value);
   const safe = value => host.isSensitive(String(value || '')) ? '[敏感内容已移除]' : String(value || '');
@@ -16,13 +16,15 @@ window.SeatAssist = (() => {
   const closed = item => ['已解决','关闭未解决'].includes(item.status);
   const active = item => host.canReply(item) && !closed(item);
   const ticketFor = item => host.getState().tickets.find(ticket => ticket.caseId === item.id);
+  const phraseBank = () => [...phrases,...(host.getState().seatPhrases||[])];
+  let composing = false;
 
   function signature(item) {
     return JSON.stringify([item.messages,item.status,item.owner,item.product,item.version,item.evidence,ticketFor(item),host.getState().channels.find(channel => channel.id === item.channel)?.status,host.getState().knowledge]);
   }
 
   function session(item) {
-    if (!sessions.has(item.id)) sessions.set(item.id,{signature:'',revision:0,expanded:false,evidence:false,tab:'suggestions',collapsed:false,query:'',category:'全部',selected:null,pending:null,lastTrace:null});
+    if (!sessions.has(item.id)) sessions.set(item.id,{signature:'',revision:0,expanded:false,evidence:false,tab:'suggestions',collapsed:true,query:'',category:'全部',selected:null,pending:null,lastTrace:null,completion:null,dismissed:''});
     const current = sessions.get(item.id);
     const next = signature(item);
     if (current.signature !== next) {
@@ -31,6 +33,7 @@ window.SeatAssist = (() => {
       current.selected = null;
       current.pending = null;
       current.lastTrace = null;
+      current.completion = null;
     }
     return current;
   }
@@ -65,7 +68,7 @@ window.SeatAssist = (() => {
     else if (current.versions.length > 1) next = '对话提到不同软件版本，先核对当前版本，暂不套用处理方案。';
     else if (current.ticket) next = `本地工单 ${current.ticket.id}：${current.ticket.status}。这不是刚查询到的实时结果，回复前请核对。`;
     else if (item.status === '等待专家') next = '已分派专家待办，仍在等待接单；目前没有新的专家结论。';
-    else if (/报修|报修单|整理.*单/.test(current.latest?.text || '')) next = '工单未创建。可让填写助手自动整理并分派，核对缺项后确认提交。';
+    else if (/报修|报修单|整理.*单/.test(current.latest?.text || '')) next = '工单未创建。点击“助手填单”生成草稿，补齐信息后核对提交。';
     else if (!current.versions.length && /黑屏|断连|故障/.test(current.latest?.text || '')) next = '软件版本尚未在客户消息中明确；需要补充时再询问，不代填。';
     const rows = [
       {label:'最初诉求',text:current.customers[0]?.text || '当前没有可读取的客户正文。',indices:current.customers[0] ? [current.customers[0].index] : []},
@@ -120,7 +123,7 @@ window.SeatAssist = (() => {
   function available(item) {
     const current = session(item);
     if (current.tab === 'suggestions') return suggestions(item);
-    return phrases.filter(phrase => (current.category === '全部' || phrase.group === current.category) && (!current.query || `${phrase.label}${phrase.text}`.includes(current.query))).map(phrase => ({...phrase,source:'团队常用语 · 固定模板，请核对是否适用于当前问题'}));
+    return phraseBank().filter(phrase => (current.category === '全部' || phrase.group === current.category) && (!current.query || `${phrase.label}${phrase.text}${phrase.keywords?.join('')}`.includes(current.query))).map(phrase => ({...phrase,source:'本地常用语 · 请核对是否适用于当前问题'}));
   }
 
   function replyPanel(item) {
@@ -130,7 +133,7 @@ window.SeatAssist = (() => {
     const choices = available(item);
     const selected = choices.find(choice => choice.id === current.selected) || choices[0];
     const attributes = `data-id="${escape(item.id)}" data-revision="${current.revision}"`;
-    return `<section class="seat-replies" aria-label="回复辅助"><div class="seat-reply-head"><div role="group" aria-label="回复辅助类型">${['suggestions','phrases'].map(tab=>action(tab==='suggestions'?'回复建议':'常用语','tab',`data-value="${tab}" aria-pressed="${current.tab===tab}"`,current.tab===tab?'small selected':'small')).join('')}</div>${action(current.collapsed?'展开':'收起','reply-toggle',`aria-expanded="${!current.collapsed}" aria-controls="seat-reply-detail"`,'small')}</div>${current.collapsed?'':`<div id="seat-reply-detail">${current.tab==='phrases'?`<div class="seat-phrase-filter"><label><span class="sr-only">搜索常用语</span><input id="seat-phrase-search" type="search" placeholder="搜索常用语" value="${escape(current.query)}"></label><label><span class="sr-only">常用语分类</span><select id="seat-phrase-category">${['全部','信息补充','进度反馈','服务确认'].map(category=>`<option ${category===current.category?'selected':''}>${category}</option>`).join('')}</select></label></div>`:''}<div class="seat-reply-options" role="group" aria-label="选择回复内容">${choices.map(choice=>action(escape(choice.label),'select',`${attributes} data-value="${choice.id}" aria-pressed="${choice.id===selected?.id}"`,choice.id===selected?.id?'small selected':'small')).join('')}</div>${selected?`<div class="seat-reply-preview"><p>${escape(selected.text)}</p><div class="seat-reply-source"><span>${escape(selected.source)}</span>${selected.knowledgeId?host.button('查看知识','knowledge-detail','small',`data-id="${selected.knowledgeId}"`):''}</div><div class="seat-reply-actions"><span>仅填入草稿，不自动发送</span><div>${action('建议有误','feedback',`${attributes} data-kind="reply" data-value="${selected.id}"`,'small')}${action('填入草稿','insert',`${attributes} data-value="${selected.id}"`,'small soft')}</div></div></div>`:'<p class="seat-muted seat-empty">没有匹配的常用语，试试其他关键词或分类。</p>'}${current.pending?`<div class="seat-draft-conflict" role="status"><p>输入框已有内容，保留还是替换？</p><div>${action('追加到末尾','confirm-insert',`${attributes} data-value="append"`,'small')}${action('替换原草稿','confirm-insert',`${attributes} data-value="replace"`,'small')}${action('取消','cancel-insert','','small')}</div></div>`:''}</div>`}</section>`;
+    return `<section class="seat-replies" aria-label="回复辅助"><div class="seat-reply-head"><div role="group" aria-label="回复辅助类型">${['suggestions','phrases'].map(tab=>action(tab==='suggestions'?'回复建议':'常用语库','tab',`data-value="${tab}" aria-pressed="${current.tab===tab}"`,current.tab===tab?'small selected':'small')).join('')}</div>${action(current.collapsed?'展开':'收起','reply-toggle',`aria-expanded="${!current.collapsed}" aria-controls="seat-reply-detail"`,'small')}</div>${current.collapsed?'<span class="seat-typing-hint">输入关键词时推荐常用语</span>':`<div id="seat-reply-detail">${current.tab==='phrases'?`<div class="seat-phrase-filter">${action('新增','phrase-new','','small')}<label><span class="sr-only">搜索常用语</span><input id="seat-phrase-search" type="search" placeholder="搜索常用语" value="${escape(current.query)}"></label><label><span class="sr-only">常用语分类</span><select id="seat-phrase-category">${['全部','信息补充','进度反馈','服务确认','自定义'].map(category=>`<option ${category===current.category?'selected':''}>${category}</option>`).join('')}</select></label></div>`:''}<div class="seat-reply-options" role="group" aria-label="选择回复内容">${choices.map(choice=>action(escape(choice.label),'select',`${attributes} data-value="${choice.id}" aria-pressed="${choice.id===selected?.id}"`,choice.id===selected?.id?'small selected':'small')).join('')}</div>${selected?`<div class="seat-reply-preview"><p>${escape(selected.text)}</p><div class="seat-reply-source"><span>${escape(selected.source)}</span>${selected.knowledgeId?host.button('查看知识','knowledge-detail','small',`data-id="${selected.knowledgeId}"`):''}</div><div class="seat-reply-actions"><span>仅填入草稿，不自动发送</span><div>${action('建议有误','feedback',`${attributes} data-kind="reply" data-value="${selected.id}"`,'small')}${action('填入草稿','insert',`${attributes} data-value="${selected.id}"`,'small soft')}</div></div></div>`:'<p class="seat-muted seat-empty">没有匹配的常用语，试试其他关键词或分类。</p>'}${current.pending?`<div class="seat-draft-conflict" role="status"><p>输入框已有内容，保留还是替换？</p><div>${action('追加到末尾','confirm-insert',`${attributes} data-value="append"`,'small')}${action('替换原草稿','confirm-insert',`${attributes} data-value="replace"`,'small')}${action('取消','cancel-insert','','small')}</div></div>`:''}</div>`}</section>`;
   }
 
   function refreshPanels(focusId) {
@@ -182,6 +185,10 @@ window.SeatAssist = (() => {
     const item = host.selectedCase();
     const current = session(item);
     const value = element.dataset.value;
+    if(name==='complete')return complete(value);
+    if(name==='dismiss-completion'){current.dismissed=document.getElementById('reply-input')?.value||'';current.completion=null;return paintCompletion();}
+    if(name==='phrase-new')return newPhrase();
+    if(name==='phrase-save')return savePhrase();
     if (element.dataset.id && element.dataset.id !== item.id) return host.toast('会话已切换，请重新选择。',true);
     if (element.dataset.revision && Number(element.dataset.revision) !== current.revision) return host.toast('会话已有更新，请使用新的建议。',true);
     switch (name) {
@@ -260,5 +267,65 @@ window.SeatAssist = (() => {
     if (panel && Number(panel.dataset.revision) !== session(host.selectedCase()).revision) host.render();
   }
 
-  return {configure(api){host=api;},summaryPanel,replyPanel,dispatch,input,change,externalInsert,summarize,suggestions,sync,reset(){sessions.clear();}};
+  function matchPhrases(text,caret,bank=phrases) {
+    const before=String(text).slice(0,caret);
+    return bank.flatMap(phrase=>{
+      const keyword=(phrase.keywords||[]).filter(word=>word.length>=2&&before.toLowerCase().endsWith(word.toLowerCase())).sort((left,right)=>right.length-left.length)[0];
+      return keyword?[{...phrase,keyword,start:caret-keyword.length,end:caret}]:[];
+    }).sort((left,right)=>right.keyword.length-left.keyword.length).slice(0,3);
+  }
+  function typeahead(input,isComposing=false) {
+    if(!host||host.getView().page!=='workspace')return;
+    const item=host.selectedCase();const state=session(item);
+    if(!input||input.disabled||isComposing||composing||!active(item)||host.getView().composer!=='reply'||host.isSensitive(input.value)||input.selectionStart!==input.selectionEnd){state.completion=null;paintCompletion();return;}
+    const choices=input.value===state.dismissed?[]:matchPhrases(input.value,input.selectionStart,phraseBank());
+    state.completion=choices.length?{original:input.value,caret:input.selectionStart,choices,index:-1,revision:state.revision}:null;
+    paintCompletion();
+  }
+  function paintCompletion() {
+    const container=document.getElementById('seat-inline-phrases');if(!container)return;
+    const state=session(host.selectedCase());const completion=state.completion;
+    container.innerHTML=completion?`<section class="seat-typeahead" aria-label="输入触发的常用语"><header><span>匹配“${escape(completion.choices[0].keyword)}” · 仅填入草稿</span>${action('关闭','dismiss-completion','','quiet small')}</header><div id="seat-completions" role="listbox" aria-label="常用语候选">${completion.choices.map((choice,index)=>`<button id="seat-completion-${index}" data-action="seat-complete" data-value="${escape(choice.id)}" role="option" aria-selected="${completion.index===index}"><strong>${escape(choice.label)}</strong><span>${escape(choice.text)}</span><small>替换关键词</small></button>`).join('')}</div><footer>↑ ↓ 选择 · Enter 填入 · Esc 收起 · 不自动发送</footer></section>`:'';
+    const input=document.getElementById('reply-input');
+    if(input){if(completion){input.setAttribute('aria-controls','seat-completions');if(completion.index>=0)input.setAttribute('aria-activedescendant','seat-completion-'+completion.index);else input.removeAttribute('aria-activedescendant');}else{input.removeAttribute('aria-controls');input.removeAttribute('aria-activedescendant');}}
+  }
+  function complete(identifier) {
+    const item=host.selectedCase();const state=session(item);const completion=state.completion;
+    const choice=completion?.choices.find(choice=>choice.id===identifier);const input=document.getElementById('reply-input');
+    if(!choice||!input||input.disabled||!active(item)||host.getView().composer!=='reply'||completion.revision!==state.revision||input.value!==completion.original||input.selectionStart!==completion.caret)return host.toast('草稿或会话已变化，请重新选择常用语。',true);
+    const text=input.value.slice(0,choice.start)+choice.text+input.value.slice(choice.end);
+    if(host.isSensitive(text)||!host.setComposerText(text))return;
+    state.completion=null;state.dismissed=text;paintCompletion();
+    input.focus();input.setSelectionRange(choice.start+choice.text.length,choice.start+choice.text.length);
+    record(item,'reply',{candidate:{id:choice.id,text:choice.text,source:'关键词触发的本地常用语'},inserted:true,sent:false,mode:'replace-keyword'});
+  }
+  function newPhrase() {
+    host.showDialog('新增本地常用语','只保存在当前浏览器的售后项目，不自动回复客户。',`<div class="seat-new-phrase"><label>名称<input id="seat-new-label" maxlength="24" placeholder="例如：补充序列号"></label><label>触发关键词（逗号分隔，至少 2 字）<input id="seat-new-keywords" maxlength="80" placeholder="序列号,设备编号"></label><label>完整话术<textarea id="seat-new-text" maxlength="500" rows="4" placeholder="仅填写通用话术，不含真实客户信息或未核实承诺。"></textarea></label><p id="seat-new-error" role="alert"></p></div>`,action('保存常用语','phrase-save','','primary')+host.button('取消','close-dialog'));
+  }
+  function savePhrase() {
+    const label=document.getElementById('seat-new-label')?.value.trim()||'';
+    const raw=document.getElementById('seat-new-keywords')?.value||'';
+    const keywords=[...new Set(raw.split(/[,，、\n]/).map(word=>word.trim()).filter(Boolean))];
+    const text=document.getElementById('seat-new-text')?.value.trim()||'';
+    const error=document.getElementById('seat-new-error');if(!error)return;
+    if(!label||label.length>24||!text||text.length>500||!keywords.length||keywords.some(word=>word.length<2||word.length>20)||raw.length>80){error.textContent='请补全名称、2–20 字的关键词和 500 字以内话术。';return;}
+    if(host.isSensitive([label,text,raw].join(' '))){error.textContent='请先移除敏感信息。';return;}
+    const bank=phraseBank();if(bank.some(phrase=>phrase.label===label||phrase.text===text)){error.textContent='已有相同名称或内容，不重复添加。';return;}
+    const state=host.getState();state.seatPhrases ||= [];if(state.seatPhrases.length>=50){error.textContent='本地自定义常用语最多 50 条。';return;}
+    state.seatPhrases.push({id:'phrase-'+crypto.randomUUID(),label,keywords,text,group:'自定义'});host.persist();host.closeDialog();session(host.selectedCase()).tab='phrases';session(host.selectedCase()).collapsed=false;refreshPanels();host.toast('已保存本地常用语，输入对应关键词即可看到推荐。');
+  }
+  function configure(api) {
+    host=api;
+    document.addEventListener('compositionstart',event=>{if(event.target.id==='reply-input'){composing=true;typeahead(event.target,true);}});
+    document.addEventListener('compositionend',event=>{if(event.target.id==='reply-input'){composing=false;typeahead(event.target);}});
+    document.addEventListener('click',event=>{if(event.target.id==='reply-input')typeahead(event.target);});
+    document.addEventListener('keydown',event=>{
+      if(event.target.id!=='reply-input'||event.isComposing||composing||event.ctrlKey||event.metaKey)return;
+      const state=session(host.selectedCase());const completion=state.completion;if(!completion)return;
+      if(event.key==='Escape'){event.preventDefault();state.dismissed=event.target.value;state.completion=null;paintCompletion();}
+      if(['ArrowDown','ArrowUp'].includes(event.key)){event.preventDefault();completion.index=(completion.index+(event.key==='ArrowDown'?1:completion.index<0?0:-1)+completion.choices.length)%completion.choices.length;paintCompletion();}
+      if(event.key==='Enter'&&completion.index>=0){event.preventDefault();complete(completion.choices[completion.index].id);}
+    });
+  }
+  return {configure,summaryPanel,replyPanel,dispatch,input,change,externalInsert,summarize,suggestions,sync,typeahead,matchPhrases,reset(){sessions.clear();composing=false;}};
 })();

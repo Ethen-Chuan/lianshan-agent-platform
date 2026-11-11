@@ -1,0 +1,47 @@
+.ontology-usage{--usage-ink:#2f432f;--usage-muted:#5c6c56;--usage-line:#d5decc;color:var(--usage-ink);border:1px solid var(--usage-line);border-radius:12px;background:#f8faf3;margin:0 0 24px;overflow:hidden;container:ontology-usage / inline-size}
+.usage-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;padding:22px 24px;border-bottom:1px solid var(--usage-line)}
+.usage-heading span,.usage-kicker{font-size:11px;color:var(--usage-muted)}
+.usage-heading h2{font-size:20px;line-height:1.5;margin:8px 0;font-weight:600}
+.usage-heading p,.usage-references p{font-size:12px;line-height:1.85;margin:6px 0 0;color:var(--usage-muted);max-width:72ch}
+.usage-heading>small{font-size:10px;color:var(--usage-muted);flex:none;padding-top:6px}
+.usage-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr)}
+.usage-definition,.usage-preview{min-width:0;padding:22px 24px}
+.usage-definition h3{font-size:18px;font-weight:550;line-height:1.5;margin:8px 0}
+.usage-definition>p{font-size:12px;line-height:1.85;color:var(--usage-muted);margin:0}
+.usage-definition dl{display:grid;gap:16px;margin:18px 0}
+.usage-definition dt{font-size:11px;color:var(--usage-muted);margin:0 0 8px}
+.usage-definition dd{font-size:12px;line-height:1.8;margin:0;overflow-wrap:anywhere}
+.usage-tags{display:flex;gap:6px;flex-wrap:wrap}
+.usage-tags span{padding:3px 7px;border-radius:4px;background:#e9efe0;border:1px solid var(--usage-line);font-size:11px;overflow-wrap:anywhere;max-width:100%}
+.usage-source{font-size:11px;color:var(--usage-muted)}
+.usage-source summary{cursor:pointer;line-height:1.8}
+.usage-source p{font-size:11px;line-height:1.8;margin:10px 0}
+.usage-source>div{display:flex;gap:6px;flex-wrap:wrap}
+.usage-preview{background:#edf2e6;border-left:1px solid var(--usage-line)}
+.usage-scenarios{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:18px}
+.ontology-usage .usage-scenarios .button{font-size:11px;min-height:34px;padding:6px 11px;border:1px solid transparent;background:transparent;color:var(--usage-muted);border-radius:6px}
+.ontology-usage .usage-scenarios .button[aria-pressed=true]{background:#405b38;border-color:#405b38;color:#f4f7ed}
+.usage-preview-body h3{display:flex;align-items:center;gap:8px;font-size:16px;line-height:1.6;font-weight:600;margin:16px 0 8px}
+.usage-preview-body h3 .icon{width:18px;height:18px;flex:none}
+.usage-preview-body p{font-size:12px;line-height:1.9;margin:0;overflow-wrap:anywhere}
+.usage-preview-body .usage-example{margin-top:7px;padding-bottom:16px;border-bottom:1px solid var(--usage-line);color:var(--usage-muted)}
+.usage-preview-body>small{display:block;margin-top:12px;font-size:10px;color:var(--usage-muted)}
+.usage-limit{font-size:11px;line-height:1.85;color:var(--usage-muted);margin:18px 0 0}
+.usage-references{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:20px 24px;border-top:1px solid var(--usage-line)}
+.usage-references>div{min-width:0}
+.usage-references h3{font-size:14px;margin:0;font-weight:600;line-height:1.6}
+.usage-reference-links{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.usage-reference-links:empty{display:none}
+.usage-next{display:flex;flex-direction:column;gap:8px;flex:none;max-width:250px;align-items:stretch}
+.ontology-usage .button{font-size:11px;white-space:normal;overflow-wrap:anywhere;line-height:1.6}
+.ontology-usage :is(button,summary):focus-visible{outline:2px solid #405b38;outline-offset:3px}
+.usage-empty{padding:16px 0}
+.usage-empty :is(h2,h3){font-size:17px;line-height:1.6;margin:0 0 8px}
+.usage-empty p{font-size:12px;color:var(--usage-muted);line-height:1.8;margin:0}
+.ontology-usage>.usage-empty{padding:24px}
+.ontology-usage:focus{outline:none}
+.usage-inspector{display:grid;gap:10px;margin-top:14px;padding-top:12px;border-top:1px solid var(--orbit-line);font-size:11px;line-height:1.7;color:var(--orbit-secondary)}
+.ontology-shell .usage-inspector .button{justify-content:flex-start;padding:8px 10px;white-space:normal;border:1px solid var(--orbit-line);color:var(--orbit-accent);font-size:11px;line-height:1.65}
+.ontology-shell .usage-inspector .button:focus-visible{outline:2px solid var(--orbit-accent);outline-offset:3px}
+@container ontology-usage (max-width:700px){.usage-heading{flex-direction:column;gap:10px}.usage-heading>small{padding:0}.usage-layout{grid-template-columns:minmax(0,1fr)}.usage-preview{border-left:0;border-top:1px solid var(--usage-line)}.usage-references{align-items:flex-start;flex-direction:column}.usage-next{max-width:100%;flex-direction:row;flex-wrap:wrap}}
+@container ontology-usage (max-width:400px){.usage-heading,.usage-definition,.usage-preview,.usage-references{padding:18px 16px}.usage-heading h2{font-size:18px}.usage-scenarios{gap:3px}.ontology-usage .usage-scenarios .button{padding:7px 9px}}

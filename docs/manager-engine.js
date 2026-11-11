@@ -2,7 +2,7 @@ window.ManagerEngine = {
   create(host) {
     const jobs = new Map();
     const limits = {tasks:6,workerSteps:2,attempts:3,assists:4,storedTasks:40};
-    const names = {manager:'项目助手',knowledge:'知识查找',service:'售后接待助手',ticket:'工单填写助手',quality:'对话质检助手',expert:'外部专家（模拟）'};
+    const names = {get manager(){return window.ProjectStudio?.coordinatorName?.()||'连小山';},knowledge:'知识查找',service:'售后接待助手',ticket:'工单填写助手',quality:'对话质检助手',expert:'外部专家（模拟）'};
     const kinds = {service:'接待与报修准备',ticket:'仅整理工单',lookup:'查询工单进度',review:'复核已有对话',knowledge:'仅核查方案'};
     const activeStates = ['排队中','执行中'];
     let alive = true;
@@ -21,8 +21,8 @@ window.ManagerEngine = {
     const stepOf = (task,identifier) => task.steps.find(step => step.id === identifier);
     const saved = () => {host.persist();if (!booting && alive) host.onChange();};
     const fail = message => {throw new Error(message);};
-    const event = (task,text,actor='manager',type='state') => {
-      task.events.push({sequence:task.events.length+1,time:stamp(),actor,type,text});
+    const event = (task,text,actor='manager',type='state',context={}) => {
+      task.events.push({sequence:task.events.length+1,time:stamp(),actor,type,text,...context});
       task.updatedAt = stamp();
     };
     const message = (role,text,taskIds=[],conversationId) => {
@@ -113,7 +113,7 @@ window.ManagerEngine = {
       allowed(task.caseId,task.kind);
       if (changed(task)) fail('来源记录已有变化，请先“刷新资料并重跑”。');
       task.status = '排队中';
-      event(task,'任务进入调度队列；最多 2 个任务同时推进，同一助手一次执行 1 个步骤。');
+      event(task,'任务进入调度队列；最多 '+limits.tasks+' 个任务同时推进，同一助手一次执行 '+limits.workerSteps+' 个步骤。');
       saved();pump();return task;
     }
 
@@ -277,6 +277,16 @@ window.ManagerEngine = {
       return host.record({caseId:task.caseId,taskId:task.id,stepId:entry.id,title:names[entry.worker]+' · '+entry.label,agent:entry.worker,tool:entry.type==='expert'?'mock.a2a.request':'local.manager.'+entry.type,input:{taskId:task.id,round:task.round,stepId:entry.id,caseId:task.caseId,dependencies:entry.dependencies,request:input},output,source:'本地任务快照',durationMs,status,category:injectedTimeout?'工具超时':status==='需排查'?'表达或其他问题':'',fixture:injectedTimeout?{timeout:true}:null,summary:'记录本次本地函数的输入与输出；页面步骤间有演示延迟，不是模型耗时。未对客户发送，未调用真实外部 Agent。'});
     }
 
+    function resultText(entry){
+      const output=entry.output;
+      if(['knowledge','assistKnowledge'].includes(entry.type))return output.found?'找到候选资料：'+output.documents.map(document=>document.id+' / '+document.version).join('、')+'。适用条件仍需人工核实。':'没有匹配的已发布资料，需要补充依据，不能直接套用旧方案。';
+      if(entry.type==='draft')return output.existing?'已有工单 '+output.ticketId+'，不重复建单。':'报修草稿已整理。'+(output.missing.length?'还缺少：'+output.missing.join('、')+'。':'字段已齐备，仍需核对来源。')+'尚未提交。';
+      if(entry.type==='reply')return '待审核回复：'+output.text+'\n尚未发送给客户。';
+      if(entry.type==='quality')return (output.blocking?'发现需拦截的风险：'+output.risk+'。':'本地检查未命中拦截项。')+(output.missing.length?'仍缺少：'+output.missing.join('、')+'。':'')+'请人工核对依据与承诺。';
+      if(entry.type==='expert')return output.text;
+      return entry.label+'完成。';
+    }
+
     function launch(task,entry) {
       const stateIdentity=host.getState();
       const token=++entry.token;
@@ -284,7 +294,7 @@ window.ManagerEngine = {
       entry.status='执行中';entry.startedAt=stamp();task.status='执行中';
       const exchangeInFlight=task.exchanges.find(item=>item.stepId===entry.id);
       if(exchangeInFlight)exchangeInFlight.status='执行中';
-      event(task,names[entry.worker]+' 开始“'+entry.label+'”。',entry.worker,'start');
+      event(task,names[entry.worker]+' 开始“'+entry.label+'”。',entry.worker,'start',{stepId:entry.id,dependencies:[...entry.dependencies],from:[...new Set(entry.dependencies.map(identifier=>stepOf(task,identifier).worker))],round:task.round});
       const timer=setTimeout(()=>{
         const job=jobs.get(key);
         if (!alive || host.getState()!==stateIdentity || !job || job.token!==token || entry.token!==token || entry.status!=='执行中' || !activeStates.includes(task.status)) return;
@@ -299,14 +309,14 @@ window.ManagerEngine = {
           entry.output=clean(execute(task,entry));entry.durationMs=performance.now()-started;entry.status='已完成';entry.finishedAt=stamp();
           entry.traceId=recordStep(task,entry,input,entry.output,entry.durationMs);
           if(exchange){exchange.status='已返回';exchange.traceId=entry.traceId;event(task,names[exchange.to]+' 返回协作结果，交回 '+names[exchange.from]+'；没有外发请求。',exchange.to,'a2a-result');}
-          event(task,entry.label+'完成。',entry.worker,'finish');
+          event(task,entry.label+'完成。',entry.worker,'finish',{stepId:entry.id,round:task.round,resultText:clean(resultText(entry))});
           if(entry.type==='knowledge' && !entry.output.found && task.kind==='service' && !changed(task)) assist(task.id,'knowledge','expert',true);
           if(entry.type==='result') {task.status='待确认';event(task,'结果已汇总，等待人工核对；回复未发送、工单未提交。');message('manager',task.id+' 已准备好结果，请核对回复、草稿和待补充项。',[task.id]);}
         } catch(error) {
           entry.status='失败';entry.error=clean(error.message);entry.durationMs=performance.now()-started;
           if(exchange)exchange.status='失败';
           entry.traceId=recordStep(task,entry,input,{error:entry.error,attempt:entry.attempts,injected:task.fault==='timeout'},entry.durationMs,'需排查');
-          stopRunning(task,'其他步骤失败，停止本轮未完成调用');task.status='失败';event(task,entry.label+'失败：'+entry.error,entry.worker,'failure');
+          stopRunning(task,'其他步骤失败，停止本轮未完成调用');task.status='失败';event(task,entry.label+'失败：'+entry.error,entry.worker,'failure',{stepId:entry.id,round:task.round});
           message('manager',task.id+' 暂停在“'+entry.label+'”，可查看原因后重试。',[task.id]);
         }
         saved();pump();
@@ -367,6 +377,10 @@ window.ManagerEngine = {
     }
 
     function dispose() {alive=false;for(const job of jobs.values())clearTimeout(job.timer);jobs.clear();}
+    function describePlan(kind) {
+      if (!Object.hasOwn(kinds,kind)) fail('不支持这种任务类型。');
+      return plan(kind).map(({id,worker,label,dependencies}) => ({id,worker,label,dependencies:[...dependencies]}));
+    }
     function reset() {for(const job of jobs.values())clearTimeout(job.timer);jobs.clear();alive=true;host.getState().manager=null;initialize();saved();}
     function initialize() {
       if(!host.getState().manager || host.getState().manager.schema!==1) {
@@ -382,6 +396,6 @@ window.ManagerEngine = {
       get().concurrency={tasks:limits.tasks,workerSteps:limits.workerSteps};
     }
     initialize();booting=false;
-    return {get,find,names,kinds,limits,submit,start,pause,cancel,retry,rerunKnowledge,refresh,assist,review,priority,stats,setConcurrency,changed,allowed,message,save:saved,dispose,reset};
+    return {get,find,names,kinds,limits,describePlan,submit,start,pause,cancel,retry,rerunKnowledge,refresh,assist,review,priority,stats,setConcurrency,changed,allowed,message,save:saved,dispose,reset};
   }
 };

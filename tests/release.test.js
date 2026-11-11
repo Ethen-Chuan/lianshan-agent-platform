@@ -17,7 +17,7 @@ test('all application and deployment JavaScript parses', () => {
 
 test('public artifacts are allowlisted and backend-free', () => {
   const filenames = filesystem.readdirSync(path.join(root, 'site'));
-  for (const forbidden of ['server.js', 'model-connections-server.js', 'README.md', 'package.json', '.env', 'auth.json', '.git']) assert.ok(!filenames.includes(forbidden));
+  for (const forbidden of ['server.js', 'model-connections-server.js', 'model-client-server.js', 'orbit-designer-server.js', 'super-agent-server.js', 'super-agent-runtime.js', 'super-agent-store.js', 'super-agent-policy.js', 'tasks.sqlite', 'README.md', 'package.json', '.env', 'auth.json', '.git']) assert.ok(!filenames.includes(forbidden));
   assert.ok(filenames.includes('about.html'));
   assert.ok(filenames.includes('THIRD_PARTY_LICENSE.txt'));
 });

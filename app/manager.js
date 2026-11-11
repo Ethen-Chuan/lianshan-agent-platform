@@ -31,7 +31,8 @@ window.ManagerHub = (() => {
 
   function sidebarHistory() {
     const history=threads().filter(thread=>engine.get().messages.some(message=>message.conversationId===thread.id)||ui.drafts[thread.id]?.prompt||ui.drafts[thread.id]?.cli);
-    return `<div class="thread-history-label">最近对话</div>${history.slice(0,8).map(thread=>`<button class="thread-history-item ${host.getView().page==='manager'&&thread.id===activeThread().id?'selected':''}" data-action="manager-thread" data-id="${thread.id}" title="${escape(thread.title)}" aria-current="${thread.id===activeThread().id?'true':'false'}">${host.icon('message-circle','small')}<span>${escape(thread.title==='新对话'?'未发送的对话':thread.title)}</span>${engine.get().tasks.some(task=>task.conversationId===thread.id&&['执行中','排队中'].includes(task.status))?'<i class="thread-running" aria-label="有任务执行中"></i>':''}</button>`).join('')||'<p class="thread-history-empty">暂无最近对话</p>'}`;
+    if(!history.length)return '';
+    return `<div class="thread-history-label">项目助手 · 最近对话</div>${history.slice(0,4).map(thread=>`<button class="thread-history-item ${host.getView().page==='manager'&&thread.id===activeThread().id?'selected':''}" data-action="manager-thread" data-id="${thread.id}" title="${escape(thread.title)}" aria-current="${thread.id===activeThread().id?'true':'false'}">${host.icon('message-circle','small')}<span>${escape(thread.title==='新对话'?'未发送的对话':thread.title)}</span>${engine.get().tasks.some(task=>task.conversationId===thread.id&&['执行中','排队中'].includes(task.status))?'<i class="thread-running" aria-label="有任务执行中"></i>':''}</button>`).join('')||'<p class="thread-history-empty">暂无最近对话</p>'}`;
   }
 
   function switchThread(identifier) {
@@ -62,11 +63,13 @@ window.ManagerHub = (() => {
     if (!main) return;
     const active = document.activeElement;
     const focus = main.contains(active) && active.id ? {id:active.id,start:active.selectionStart,end:active.selectionEnd} : null;
-    const scrolls = [...main.querySelectorAll('[data-manager-scroll]')].map(element=>({id:element.id,top:element.scrollTop,bottom:element.scrollHeight-element.clientHeight-element.scrollTop<8}));
+    window.GroupChat?.capture();
+    const scrolls = [...main.querySelectorAll('[data-manager-scroll]')].filter(element=>!element.closest('.aw-chat .aw-stream')).map(element=>({id:element.id,top:element.scrollTop,bottom:element.scrollHeight-element.clientHeight-element.scrollTop<8}));
     const details = [...main.querySelectorAll('details[id]')].map(element=>({id:element.id,open:element.open}));
     const scrollTop = main.scrollTop;
     main.innerHTML = window.ProjectHub?(host.getView().page==='group'?window.ProjectHub.groupWorkspace():window.ProjectHub.managerPage()):page();
     window.HubMedia?.sync();
+    window.GroupChat?.mount();
     const history=document.getElementById('manager-thread-list');
     if(history)history.innerHTML=sidebarHistory();
     for (const saved of details) {const element=document.getElementById(saved.id);if(element)element.open=saved.open;}
@@ -234,6 +237,8 @@ rerun PM-0001 knowledge</pre><p>run 的任务类型：service 接待与报修准
     const identifier=element.dataset.id;
     ui.error='';
     try {
+      if(name==='open'&&window.AgentWorkspace)return window.AgentWorkspace.openTask(identifier);
+      if(name==='thread'&&window.AgentWorkspace)return window.AgentWorkspace.openTask(engine.get().tasks.find(task=>task.conversationId===identifier)?.id||'');
       if (name==='open') {const task=engine.find(identifier);if(!task)throw new Error('没有找到这个任务。');if(task.conversationId==='GROUP-AFTERSALES')return window.ProjectHub.openGroupTask(identifier);if(task.conversationId&&task.conversationId!==activeThread().id)switchThread(task.conversationId);if(!task.conversationId){task.conversationId=activeThread().id;engine.message('manager','这是保留的预置计划，尚未执行。',[task.id]);}ui.selected=identifier;ui.caseId=task.caseId;activeThread().selectedTaskId=identifier;activeThread().caseId=task.caseId;ui.drawer='task';host.closeDialog();host.persist();if(host.getView().page!=='manager')host.navigate('manager');else repaint();return;}
       if (name==='new') return newThread();
       if (name==='thread') return switchThread(identifier);
@@ -282,5 +287,5 @@ rerun PM-0001 knowledge</pre><p>run 的任务类型：service 接待与报修准
   }
   function configure(api) {host=api;engine=window.ManagerEngine.create({...api,onChange:repaint});ui.caseId=activeThread().caseId;ui.selected=activeThread().selectedTaskId||'';host.persist();}
   function reset() {ui.selected='';ui.mode='prompt';ui.caseId='CS-0108';ui.prompt='';ui.cli='';ui.notes={};ui.confirmed={};ui.error='';ui.filter='all';ui.worker='all';ui.drawer='';ui.drafts={};engine.reset();}
-  return {configure,page,dispatch,input,change,runInput,repaint,reset,sidebarHistory,getEngine:()=>engine,currentThread:()=>activeThread().id};
+  return {configure,page,dispatch,input,change,runInput,repaint,reset,sidebarHistory,resultPanel,taskDetail,rosterPanel,getEngine:()=>engine,currentThread:()=>activeThread().id};
 })();

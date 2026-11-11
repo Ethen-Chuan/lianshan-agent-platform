@@ -1,5 +1,5 @@
 {
-  "version": "0.1.0",
+  "version": "0.2.0",
   "mode": "public-static-demo",
   "files": [
     {
@@ -12,7 +12,19 @@
     },
     {
       "filename": "about.html",
-      "sha256": "4478802b5cbcda65d427eb73438e5c179a630c7ab52b96665bad643ce5858bcd"
+      "sha256": "be2a84734aabbf3a18b5f6debb0d1bb4c52d9d55dc5917c36acd92709ca920ec"
+    },
+    {
+      "filename": "agent-harness.js",
+      "sha256": "915aeb3e4162bf53f5d94f433bf1c22e6c0879997060cc84287e3e221e02bb6c"
+    },
+    {
+      "filename": "agent-workspace.css",
+      "sha256": "11721ecc05ed399d93f9a1c3afa02303198b996653cee27e56b3af6fa55c9dc9"
+    },
+    {
+      "filename": "agent-workspace.js",
+      "sha256": "8d8f21f0ec6c8d2e8f61bda4471ef2be87a0f00ab4c70bac6640e0e0d553d2b6"
     },
     {
       "filename": "analytics-data.js",
@@ -24,11 +36,39 @@
     },
     {
       "filename": "analytics.js",
-      "sha256": "6c7adab723b70f7d6b06c9b0e6bf23d28badb46a2b14fcbf135a787a67195361"
+      "sha256": "49ece2b3b495e1e5d0ec127173ecb17ca163a9bcbcad5f5fc91ca46fa3c3a821"
     },
     {
       "filename": "app.js",
-      "sha256": "20f69a0e95925ee0b2fa34f4a177f573e3ea9de97351d3bd5120db9da33bda8f"
+      "sha256": "d75047e8be940ff01abd070fb84ff215d458d03a50f08587c7e0bf5b71452392"
+    },
+    {
+      "filename": "business-graph.css",
+      "sha256": "70735cd52e942b4ec85210b715c965530a7d2e5c5ab04dd86521428cb711078a"
+    },
+    {
+      "filename": "business-graph.js",
+      "sha256": "28d3be9ae5efd09e88e18b0f0e7016aa684d5a4fc57da24c1fa16cb5b0356bb9"
+    },
+    {
+      "filename": "customer-chat-policy.js",
+      "sha256": "e96533b93cf0710d0ad2513267e71a2b64cf95f5229a01582022a46aaeb3055a"
+    },
+    {
+      "filename": "customer-chat.css",
+      "sha256": "5d53d5f16a5b6e7a70129b618b73e1db6c167941db37db54992a37589bf00dfe"
+    },
+    {
+      "filename": "customer-chat.js",
+      "sha256": "689aeabb4bc0cfb0cf8a79badc10e525224b726b723a72f839bf6315f550c1aa"
+    },
+    {
+      "filename": "group-chat.css",
+      "sha256": "8767cee90903f7e4c9c9a4ec3aac4507c25ea6e9dee4f0887db65df6faa76803"
+    },
+    {
+      "filename": "group-chat.js",
+      "sha256": "1b0f9b10c3e74318f69eee6ab3894afcd0aa4f071fc92ba5ed9256115e6c8eab"
     },
     {
       "filename": "icon-help.css",
@@ -36,7 +76,7 @@
     },
     {
       "filename": "icon-help.js",
-      "sha256": "465566ae5cf363f826f9284d04cfbe7cb12cc918a4a6ae33cf912f94540be71f"
+      "sha256": "2a096f36a41e597fff870d1a3cc30b27e36b18b0a68412285a422067d10f6469"
     },
     {
       "filename": "icons.js",
@@ -48,15 +88,31 @@
     },
     {
       "filename": "identity.js",
-      "sha256": "0d5cc54df9683194cac6e08d4f8c4f1665906bc3a60efaa5f17967de0fe2c888"
+      "sha256": "ade2446637497923ca3bfff01e152cb387d5ba330636e07a02f53ef2c1f6dae5"
     },
     {
       "filename": "index.html",
-      "sha256": "2639a48f5152d8f08cab8b59799899bb567b1e05302fd9eb91c676cd27341723"
+      "sha256": "72550c1eb9778865dd7a66505752b54e3077a13ba5c0e4b4e49dffd0527b4492"
+    },
+    {
+      "filename": "interface.css",
+      "sha256": "bb470efa18ba28923416a9b71cdac5275d8ec8cc573dd199da681e1426fb2c76"
+    },
+    {
+      "filename": "interface.js",
+      "sha256": "de1278bbcf89ee47f7d1dbcdd134a2d72f4dfda88052a5c23b4bdb52c297551e"
+    },
+    {
+      "filename": "knowledge-editor.css",
+      "sha256": "7392e4d48e39d4a9e1af2d53335f74f65c78d472f06a6928019a04dfef0b436e"
+    },
+    {
+      "filename": "knowledge-editor.js",
+      "sha256": "d6bd27d4537251b4fdfc32b5add09a8081674d8df8e2b713b61ac468ee5ffcaf"
     },
     {
       "filename": "manager-engine.js",
-      "sha256": "0e281bfe944106244051b7ed296373cd11cf4858d35597a405cdafd272edabb1"
+      "sha256": "c6a84853eca92647f0dd7ea16192e74e100a0e178fd3f6becd1ce0445b27000d"
     },
     {
       "filename": "manager.css",
@@ -64,7 +120,7 @@
     },
     {
       "filename": "manager.js",
-      "sha256": "597edb905c5fde334d3988f89b423e9753fa5bc227ec10563faf33604a1d4eef"
+      "sha256": "7eeebb04e0cb4e141a57e89d30a8c0bc377c330490a0cf0ef2da903503d7e836"
     },
     {
       "filename": "media-composer.css",
@@ -80,31 +136,119 @@
     },
     {
       "filename": "model-connections.js",
-      "sha256": "40ff1b9fa2e643d33bdbaf546df6f0d02caa8ac84499860317deb9d0aeac10c1"
+      "sha256": "dea0e0b1fb8cfe8f714368d3c1ed9df85b6c770bf761985b95ea2565ad315266"
     },
     {
       "filename": "model-providers.js",
       "sha256": "d991b5a5900f855e5e2acc8133bc0192d74956b95e1c90ef14e47e58a39e4556"
     },
     {
+      "filename": "ontology-atlas.css",
+      "sha256": "0cbcc5caa68e528be74e8b11dd99c4a56b07c2f50a604748b5ffd9d50a699a62"
+    },
+    {
+      "filename": "ontology-atlas.js",
+      "sha256": "72a565bf005b0b58fcb489e7b55ac12d135b90dd7770c888096e3d8ec73d9110"
+    },
+    {
+      "filename": "ontology-catalog.css",
+      "sha256": "457cf16756d4aabbc73124eeff09cd665b91a70711374eb8c02214aa07a1392a"
+    },
+    {
+      "filename": "ontology-catalog.js",
+      "sha256": "88ade1c07ae8c9aa895581419f9a7e5080f148ca3ecb555ba964765e3e89b486"
+    },
+    {
+      "filename": "ontology-graph.js",
+      "sha256": "b1d2e69f5d831cc40712d0b22cfca9ccd22533617229adff59a89542276a1d46"
+    },
+    {
+      "filename": "ontology-usage.css",
+      "sha256": "729303ac61d37b3581c2192b0ac58508a8d81e19bf7158137411944a99e55a81"
+    },
+    {
+      "filename": "ontology-usage.js",
+      "sha256": "ea5336d0cfea90a53fd8936401712a9e4caf9f476d4221011132d0e46a44be13"
+    },
+    {
+      "filename": "orbit-business-policy.js",
+      "sha256": "4b274074d059f1173388bb2df88e255233791e11c420f0e462eabbbbd4ff61d4"
+    },
+    {
+      "filename": "orbit-business.css",
+      "sha256": "1e9e76689f25f51ac571b5717d1897a4435b1d894b2691e6e07617fd0eb8dff7"
+    },
+    {
+      "filename": "orbit-business.js",
+      "sha256": "ba7f3bea2a66ab1063ac4d1f234459e2c3b5da5b1b1c8faef1e1d465c46039e7"
+    },
+    {
+      "filename": "orbit-canvas.css",
+      "sha256": "76ee512fc245ceea4806515325cac555035011d67081177e65b486fe458e3b37"
+    },
+    {
+      "filename": "orbit-copilot.js",
+      "sha256": "6c69e09671c6240ca2e1ebcd7d78e591fdaa85dc003c9bc4a85b202ac1b745c8"
+    },
+    {
+      "filename": "orbit-designer-policy.js",
+      "sha256": "3db8b63dfa43d232eddb183d8cdb12ada030fec4923fda0cf9a88dffdedba6ac"
+    },
+    {
+      "filename": "orbit-designer.css",
+      "sha256": "5eeb4e83fd43c85e881f35dc9364dcdfadebe7896cd67173491df3644405eaab"
+    },
+    {
+      "filename": "orbit-designer.js",
+      "sha256": "bc9a3690f6783bca4dd7adf32cb308f4f1b9b64dd4a54fd96cda94e549361daf"
+    },
+    {
+      "filename": "orbit-flow-gestures.js",
+      "sha256": "9c24b5e2fc45b854cfec3c3711f8d9d5d70734704502b9c3f583d6982c12251b"
+    },
+    {
+      "filename": "orbit-flow.css",
+      "sha256": "d595c60898f6d83a07d08ffc02c624bf4045021e803d273fd51d15954a6fef4d"
+    },
+    {
+      "filename": "orbit-flow.js",
+      "sha256": "82de3fe9d96690cf7bdb4d8db544d35acc025a123be0c7457b0875a409514a4f"
+    },
+    {
+      "filename": "orbit-map.css",
+      "sha256": "b388a352e5e0b522320d6be9b8f3dcc8fc547f2ecca4a0ad0c510a6f51597c92"
+    },
+    {
+      "filename": "orbit-map.js",
+      "sha256": "fee5639ccb9e8bc3d0fc596bdb3a70f9ea72360786559c20fc211a7ee6610d11"
+    },
+    {
+      "filename": "orbit-workbench.css",
+      "sha256": "25162f1a89d9049041e7d5f2ed8b7b6a29dfd8c1bda2a05d5cd3dc181d476329"
+    },
+    {
+      "filename": "orbit-workbench.js",
+      "sha256": "484fc300017fe2aea758d5362784e206e255edd5017285644af831cf9c72a38b"
+    },
+    {
       "filename": "problem-data.js",
-      "sha256": "ec695b16cc39d085f0eeae76f1f087151c14facc0059e22c71fd78e8f899b0bc"
+      "sha256": "bdb1a7fb0f2d559e3d97813f776d62840c9cbaa012af267437ad5f8d9da2e58e"
     },
     {
       "filename": "problem-insights.css",
-      "sha256": "9ff202ab4f42a77815d957b5d4b173fa92c9010b67e06a7421e37c606ff9b34e"
+      "sha256": "3693b4222e6762c5f9102db98785f0ff45e4cfb831b2b2cb68b23f323f0d7608"
     },
     {
       "filename": "problem-insights.js",
-      "sha256": "ad63dc4e3b718c647310e45bb7ba808d95b15be5a073c2915ecf1f73904a3afd"
+      "sha256": "9faae112a5d7e4f16d317ff0a0109dc40b2475cc09e93693fabb5c4201e4fb34"
     },
     {
       "filename": "project-hub.css",
-      "sha256": "e571f36ebde837921c5bcf14277231bd826220aec32e9ffb880e082ffb011726"
+      "sha256": "366163dc50d4bff034f24e0e0c79f98951102b8440e71769b2b0f82f9eaa4c6d"
     },
     {
       "filename": "project-hub.js",
-      "sha256": "4588c66cb66f118485805a296debd20054940ae08128cd744112b0e2f5e2354f"
+      "sha256": "92a8cdb878235b9ac27c4e4f2c8f59b6ad6e83a68890da4b26aee4602162e010"
     },
     {
       "filename": "public-mode.js",
@@ -120,11 +264,23 @@
     },
     {
       "filename": "seat-assist.js",
-      "sha256": "05d9d74d872d8e114d89ca527d91163641cfe1bd8f40b6485c7340c99cc28232"
+      "sha256": "5a0fe8a71f427aa6035d060d5abf267fd05952358a773a59f9d77dd3bfe196c7"
+    },
+    {
+      "filename": "service-journey.js",
+      "sha256": "d9a45330aa3c45ed87758d39a55fe4cb81ab35a298a9ef8a49c114a07a4d3d0b"
     },
     {
       "filename": "styles.css",
       "sha256": "379e0041d9bc9a34c2df4a0236de6a9b64619db1e32ae5157e1ba5e7527a2dc8"
+    },
+    {
+      "filename": "super-agent-chat.css",
+      "sha256": "3dd4afc3e3d7c00f58f844341b4fa6c55ae92caf70969ddf5d18e108b0725c93"
+    },
+    {
+      "filename": "super-agent-chat.js",
+      "sha256": "31487c9c85a2ea3dc7d5132273b0775d595f9195678f214e8aaa9869e8520528"
     },
     {
       "filename": "trace.css",
@@ -137,6 +293,18 @@
     {
       "filename": "ui.css",
       "sha256": "ab5fe997b9b2fd9a68c1f7f2b179d5b8bd9e22fee7fd986b4536472885f1f19a"
+    },
+    {
+      "filename": "workspace-polish.css",
+      "sha256": "22713f720879d0b5f8481caa7bc0674048b3f1d932e3bf00594b793479c87a75"
+    },
+    {
+      "filename": "workspace-review.css",
+      "sha256": "58fb2ed06494564d3f40b5159af69374c84a54dec9dd0f007881f97d9723e720"
+    },
+    {
+      "filename": "workspace-review.js",
+      "sha256": "6b68113ee239311b57fdc468d4271d400b509f9bcd0a6e122060e7ca338dfe87"
     }
   ]
 }

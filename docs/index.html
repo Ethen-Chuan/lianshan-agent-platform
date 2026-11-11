@@ -22,6 +22,7 @@
   <script src="analytics-data.js" defer></script>
   <script src="problem-data.js" defer></script>
   <script src="problem-insights.js" defer></script>
+  <script src="business-graph.js" defer></script>
   <script src="analytics.js" defer></script>
   <script src="trace.js" defer></script>
   <script src="seat-assist.js" defer></script>
@@ -33,13 +34,56 @@
   <script src="model-providers.js" defer></script>
   <script src="model-connections.js" defer></script>
   <link rel="stylesheet" href="project-hub.css">
+  <link rel="stylesheet" href="business-graph.css">
+  <link rel="stylesheet" href="ontology-atlas.css">
+  <link rel="stylesheet" href="ontology-usage.css">
+  <link rel="stylesheet" href="orbit-workbench.css">
+  <link rel="stylesheet" href="orbit-flow.css">
+  <link rel="stylesheet" href="orbit-canvas.css">
+  <link rel="stylesheet" href="orbit-designer.css">
+  <link rel="stylesheet" href="ontology-catalog.css">
+  <link rel="stylesheet" href="orbit-business.css">
+  <link rel="stylesheet" href="orbit-map.css">
   <link rel="stylesheet" href="media-composer.css">
+  <link rel="stylesheet" href="workspace-polish.css">
+  <link rel="stylesheet" href="agent-workspace.css">
+  <link rel="stylesheet" href="group-chat.css">
+  <link rel="stylesheet" href="workspace-review.css">
+  <link rel="stylesheet" href="knowledge-editor.css">
+  <link rel="stylesheet" href="customer-chat.css">
+  <link rel="stylesheet" href="super-agent-chat.css">
+  <link rel="stylesheet" href="interface.css">
+  <script src="agent-harness.js" defer></script>
   <script src="project-hub.js" defer></script>
+  <script src="ontology-graph.js" defer></script>
+  <script src="orbit-map.js" defer></script>
+  <script src="ontology-atlas.js" defer></script>
+  <script src="orbit-workbench.js" defer></script>
+  <script src="ontology-usage.js" defer></script>
+  <script src="orbit-flow.js" defer></script>
+  <script src="orbit-flow-gestures.js" defer></script>
+  <script src="orbit-copilot.js" defer></script>
+  <script src="orbit-designer-policy.js" defer></script>
+  <script src="orbit-business-policy.js" defer></script>
+  <script src="orbit-business.js" defer></script>
+  <script src="orbit-designer.js" defer></script>
+  <script src="ontology-catalog.js" defer></script>
   <script src="media-composer.js" defer></script>
+  <script src="customer-chat-policy.js" defer></script>
+  <script src="customer-chat.js" defer></script>
+  <script src="service-journey.js" defer></script>
+  <script src="group-chat.js" defer></script>
+  <script src="workspace-review.js" defer></script>
+  <script src="super-agent-chat.js" defer></script>
+  <script src="agent-workspace.js" defer></script>
+  <script src="knowledge-editor.js" defer></script>
+  <script src="interface.js" defer></script>
   <script src="app.js" defer></script>
 </head>
-<body>
+<body class="ui-refined">
+  <a class="ui-skip-link" href="#main-content">跳到工作区</a>
   <div id="app"></div>
+  <button id="ui-nav-scrim" class="ui-nav-scrim" data-action="ui-close-navigation" aria-label="关闭导航菜单" tabindex="-1" hidden></button>
   <div id="overlay-root"></div>
   <div id="toast-root" aria-live="polite" aria-atomic="true"></div>
 </body>

@@ -13,4 +13,6 @@ playwright-report/
 auth.json
 credentials.json
 *.har
+*.sqlite
+*.sqlite-*
 *.zip
