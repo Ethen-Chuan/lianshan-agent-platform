@@ -6,7 +6,7 @@ window.OrbitBusiness=(()=>{
   const button=(label,action,attributes='',tone='quiet small')=>host.button(label,'od-'+action,tone,attributes);
   const kinds={object:'业务对象',alias:'业务叫法',rule:'处理规则',action:'业务动作',human:'人工确认'};
   function data(){return workspace().businessDefinitionDesigner||={id:'DESIGN-'+crypto.randomUUID(),input:'',history:[],proposal:null,sceneId:'',savedSnapshot:'',savedModel:null};}
-  function view(){if(!views.has(current().id))views.set(current().id,{presentation:'star',focusId:'',edgeId:'',zoom:1,editing:false,showAll:false});return views.get(current().id);}
+  function view(){if(!views.has(current().id))views.set(current().id,{presentation:'star',focusId:'',edgeId:'',zoom:null,editing:false,showAll:false});return views.get(current().id);}
   function snapshot(){const storage=data();return JSON.stringify({model:window.OrbitOntology.data(),scene:workspace().scenes.find(entry=>entry.id===storage.sceneId)||null});}
   function valid(){return !!data().proposal&&data().proposal.snapshot===snapshot();}
   function target(){return valid()?data().proposal.model:window.OrbitOntology.data();}
@@ -22,7 +22,7 @@ window.OrbitBusiness=(()=>{
   }
   function receive(result,context,source,modelName){
     const parsed=policy.parseProposal(result,context);const storage=data();
-    if(parsed.design){const next=policy.merge(target(),parsed.design);storage.proposal={design:parsed.design,model:next,snapshot:source,questions:parsed.questions,modelName,changes:differences(window.OrbitOntology.data(),next)};view().focusId=parsed.design.entryActionId;view().edgeId='';}
+    if(parsed.design){const next=policy.merge(target(),parsed.design);storage.proposal={design:parsed.design,model:next,snapshot:source,questions:parsed.questions,modelName,changes:differences(window.OrbitOntology.data(),next)};view().focusId=parsed.design.entryActionId;view().edgeId='';view().centerId='';view().trailId='';view().starHistory=[];}
     else if(storage.proposal)storage.proposal.questions=parsed.questions;
     storage.history.push({role:'user',content:context.prompt},{role:'assistant',content:parsed.message+(parsed.questions.length?'\n'+parsed.questions.join('\n'):'')});storage.history=storage.history.slice(-12);storage.input='';
   }
@@ -56,18 +56,10 @@ window.OrbitBusiness=(()=>{
     proposal.model=next;proposal.changes=differences(window.OrbitOntology.data(),next);view().editing=false;window.OrbitDesigner.view().ack=false;window.OrbitDesigner.view().consent='';window.PortfolioHub.persist();host.render();
   }
   function starLayout(model,state){
-    const degree=id=>model.links.filter(link=>link.source===id||link.target===id).length;
-    const center=model.nodes.find(entry=>entry.id===state.focusId)||[...model.nodes].sort((left,right)=>degree(right.id)-degree(left.id))[0];
-    if(!center)return {nodes:[],links:[],width:860,height:620,columns:[]};
-    const direct=model.links.filter(link=>link.source===center.id||link.target===center.id);const ids=new Set([center.id,...direct.flatMap(link=>[link.source,link.target])]);
-    const visible=state.showAll?model.nodes:model.nodes.filter(entry=>ids.has(entry.id));const others=visible.filter(entry=>entry.id!==center.id);
-    const size=window.OrbitMap.metrics(visible);const radius=Math.max(300,others.length*Math.hypot(size.width+32,size.height+32)/(Math.PI*2));const width=radius*2+size.width+160;const height=radius*2+size.height+176;const centerX=width/2;const centerY=height/2;
-    const nodes=[{...center,x:centerX-size.width/2,y:centerY-size.height/2,...size},...others.map((entry,index)=>{const angle=-Math.PI/2+index*2*Math.PI/Math.max(1,others.length);return {...entry,x:centerX+Math.cos(angle)*radius-size.width/2,y:centerY+Math.sin(angle)*radius-size.height/2,...size};})];
-    const visibleIds=new Set(nodes.map(entry=>entry.id));
-    const links=model.links.filter(link=>visibleIds.has(link.source)&&visibleIds.has(link.target)&&(state.showAll||link.source===center.id||link.target===center.id));
-    return window.OrbitMap.reroute({nodes,links,width,height,columns:[],centerId:center.id,hiddenNodes:model.nodes.length-nodes.length});
+    return window.OrbitStar.layout(model,state);
   }
   function diagram(model,state,prefix='od-business'){
+    if(state.presentation==='star')return window.OrbitStar.diagram(model,state,prefix);
     const star=state.presentation==='star';const base=star?starLayout(model,state):window.OrbitAtlasGraph.catalogLayout(model,'complete');const layout=window.OrbitMap.bind(prefix,base,state,star?'star:'+base.centerId+':'+!!state.showAll:'cards:complete');const zoom=state.zoom??1;
     const selected=model.nodes.find(entry=>entry.id===state.focusId)||model.nodes.find(entry=>entry.id===layout.centerId);const edge=model.links.find(entry=>entry.id===state.edgeId);
     const related=edge?[edge]:selected?layout.links.filter(link=>link.source===selected.id||link.target===selected.id):layout.links;const relatedIds=new Set(related.flatMap(entry=>[entry.source,entry.target]));if(selected)relatedIds.add(selected.id);
@@ -86,10 +78,11 @@ window.OrbitBusiness=(()=>{
   }
   function dispatch(name,element){
     const state=view();const storage=data();const shown=preview();
-    if(['select','edge','clear'].includes(name))window.OrbitDesigner.view().consent='';
+    if(['select','edge','clear','center','back','trail'].includes(name))window.OrbitDesigner.view().consent='';
+    if(state.presentation==='star'&&shown&&window.OrbitStar.interact(name,element.dataset.id,state,shown.model)){state.editing=false;host.render();return;}
     if(name==='select'&&shown?.model.nodes.some(entry=>entry.id===element.dataset.id)){state.focusId=element.dataset.id;state.edgeId='';state.editing=false;}
     if(name==='edge'&&shown?.model.links.some(entry=>entry.id===element.dataset.id)){state.edgeId=element.dataset.id;state.editing=false;}
-    if(name==='presentation'&&['star','cards'].includes(element.dataset.value)){state.presentation=element.dataset.value;state.zoom=1;}
+    if(name==='presentation'&&['star','cards'].includes(element.dataset.value)){state.presentation=element.dataset.value;state.zoom=null;if(state.presentation==='star'&&shown)window.OrbitStar.enter(shown.model,state);}
     if(name==='all')state.showAll=!state.showAll;
     if(name==='zoom')state.zoom=Math.max(.65,Math.min(1.4,state.zoom+(element.dataset.value==='in'?.1:-.1)));
     if(name==='fit'){const graph=document.querySelector('[data-ob-graph="od-business"]');const stage=graph?.querySelector('.ob-stage');state.zoom=stage?Math.max(.65,Math.min(1,(graph.clientWidth-20)/Number(stage.dataset.width))):1;}
@@ -98,19 +91,19 @@ window.OrbitBusiness=(()=>{
     if(name==='confirm')return confirm();
     if(name==='discard'){storage.proposal=null;window.OrbitDesigner.view().ack=false;}
     if(name==='tests'||name==='config'){window.ProjectStudio.openScene(storage.sceneId);if(name==='tests')window.ProjectStudio.dispatch('tab',{dataset:{value:'tests'}});return;}
-    if(name==='new'){if(storage.input||storage.proposal)throw Error('请先保留输入或放弃待确认设计，再开始新业务。');workspace().businessDefinitionDesigner=null;state.focusId='';state.edgeId='';window.OrbitDesigner.view().consent='';}
+    if(name==='new'){if(storage.input||storage.proposal)throw Error('请先保留输入或放弃待确认设计，再开始新业务。');workspace().businessDefinitionDesigner=null;state.focusId='';state.edgeId='';state.centerId='';state.trailId='';state.starHistory=[];window.OrbitDesigner.view().consent='';}
     window.PortfolioHub.persist();host.render();
   }
   function capture(){
     const graph=document.querySelector('[data-ob-graph]');const viewport=graph?.querySelector('.ob-graph-viewport');const selected=graph?.querySelector('.ob-node.is-selected');const focused=document.activeElement;
-    captured=current()&&viewport?{projectId:current().id,prefix:graph.dataset.obGraph,mode:graph.dataset.obMode,selected:selected?.dataset.id,left:viewport.scrollLeft,top:viewport.scrollTop,action:focused?.dataset?.action,id:focused?.dataset?.id}:null;
+    captured=current()&&viewport?{projectId:current().id,prefix:graph.dataset.obGraph,mode:graph.dataset.obMode,center:graph.dataset.obCenter,selected:selected?.dataset.id,left:viewport.scrollLeft,top:viewport.scrollTop,action:focused?.dataset?.action,id:focused?.dataset?.id}:null;
   }
   function mount(){
     const graph=document.querySelector('[data-ob-graph]');const viewport=graph?.querySelector('.ob-graph-viewport');const selected=graph?.querySelector('.ob-node.is-selected');if(!current()||!viewport)return;
     const previous=captured?.projectId===current().id&&captured.prefix===graph.dataset.obGraph?captured:null;
-    if(previous&&previous.mode===graph.dataset.obMode&&previous.selected===selected?.dataset.id)viewport.scrollTo(previous.left,previous.top);
+    if(previous&&previous.mode===graph.dataset.obMode&&previous.center===graph.dataset.obCenter)viewport.scrollTo(previous.left,previous.top);
     else viewport.scrollTo(0,0);
-    if(previous?.action)Array.from(graph.querySelectorAll('button')).find(entry=>entry.dataset.action===previous.action&&entry.dataset.id===previous.id)?.focus({preventScroll:true});
+    if(previous?.action){const control=Array.from(graph.querySelectorAll('button')).find(entry=>entry.dataset.action===previous.action&&entry.dataset.id===previous.id);(control||selected)?.focus({preventScroll:true});}
   }
-  return {configure(adapter){host=adapter;window.OrbitMap.configure(adapter);},data,view,snapshot,valid,target,request,receive,confirm,edit,differences,starLayout,diagram,page,dispatch,capture,mount};
+  return {configure(adapter){host=adapter;window.OrbitMap.configure(adapter);window.OrbitStar.configure(adapter);},data,view,snapshot,valid,target,request,receive,confirm,edit,differences,starLayout,diagram,page,dispatch,capture,mount};
 })();

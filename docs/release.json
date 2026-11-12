@@ -92,7 +92,7 @@
     },
     {
       "filename": "index.html",
-      "sha256": "72550c1eb9778865dd7a66505752b54e3077a13ba5c0e4b4e49dffd0527b4492"
+      "sha256": "a64794b2d17cbd17962c98ce887ada7221dc432cb77621162efe4c4de8505a5a"
     },
     {
       "filename": "interface.css",
@@ -156,7 +156,7 @@
     },
     {
       "filename": "ontology-catalog.js",
-      "sha256": "88ade1c07ae8c9aa895581419f9a7e5080f148ca3ecb555ba964765e3e89b486"
+      "sha256": "836b4b31d341e8ff4799b0baf7e05708dabbc0d6ff6386a48d18682b73de4531"
     },
     {
       "filename": "ontology-graph.js",
@@ -180,11 +180,15 @@
     },
     {
       "filename": "orbit-business.js",
-      "sha256": "ba7f3bea2a66ab1063ac4d1f234459e2c3b5da5b1b1c8faef1e1d465c46039e7"
+      "sha256": "aafb3224e26042b3a8aa310c014a0ea6fd3d3d742e8045bb65ed2ca303c3e62a"
     },
     {
       "filename": "orbit-canvas.css",
       "sha256": "76ee512fc245ceea4806515325cac555035011d67081177e65b486fe458e3b37"
+    },
+    {
+      "filename": "orbit-constellation.css",
+      "sha256": "6ac5a060ef3e451042936ae3da57801e4c9cfa09d4894d73bd88d82d1b56a16e"
     },
     {
       "filename": "orbit-copilot.js",
@@ -215,12 +219,20 @@
       "sha256": "82de3fe9d96690cf7bdb4d8db544d35acc025a123be0c7457b0875a409514a4f"
     },
     {
+      "filename": "orbit-map-motion.js",
+      "sha256": "e9f744d548712d9a81c2291978809f73c0d00334b6d22e74a4894252cf1d572a"
+    },
+    {
       "filename": "orbit-map.css",
-      "sha256": "b388a352e5e0b522320d6be9b8f3dcc8fc547f2ecca4a0ad0c510a6f51597c92"
+      "sha256": "8263926be9cec2d638c9f2d7f2a2fca8a45f326d4ce357b9200c41566f7133ca"
     },
     {
       "filename": "orbit-map.js",
-      "sha256": "262c54d1e41eb8e697a48232a0e7299ba2fdb0d3da31de0e771de34a5582d6e3"
+      "sha256": "8645c24605f46b797ce79e293f3438fa9bcf99fe8b55ad68dc2431fec676588d"
+    },
+    {
+      "filename": "orbit-star.js",
+      "sha256": "087d72d17334ce50839c29b4fecc1519fc04ffd9ed14c5176f22d10d78041987"
     },
     {
       "filename": "orbit-workbench.css",

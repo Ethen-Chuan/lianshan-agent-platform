@@ -7,7 +7,7 @@ window.OntologyCatalog=(()=>{
   const escape=value=>host.escape(String(value??''));
   const button=(label,name,attributes='',tone='quiet small')=>host.button(label,'catalog-'+name,tone,attributes);
   const fields=value=>[...new Set(String(value||'').split(/[,，、\n]/).map(entry=>entry.trim()).filter(Boolean))];
-  function view(){if(!views.has(current().id))views.set(current().id,{kind:'all',query:'',tab:'overview',editingId:'',adding:false,presentation:'graph',scope:'business',focusId:'',edgeId:'',zoom:null,relationsOpen:false,showAll:false});return views.get(current().id);}
+  function view(){if(!views.has(current().id))views.set(current().id,{kind:'all',query:'',tab:'overview',editingId:'',adding:false,presentation:new URLSearchParams(location.search).get('map')==='star'?'star':'graph',scope:'business',focusId:'',edgeId:'',zoom:null,relationsOpen:false,showAll:false});return views.get(current().id);}
   function selected(){return model().nodes.find(node=>node.id===window.OrbitOntology.view().selected)||model().nodes[0];}
   function references(id){
     const direct=window.OrbitWorkbench.references().filter(entry=>entry.config.ontologyBinding.nodes.some(node=>node.id===id)).map(entry=>({id:entry.id,name:entry.name,kind:entry.kind,sceneId:entry.sceneId,agentId:workspace().agents.some(agent=>agent.id===entry.id)?entry.id:'',changed:entry.changes.some(change=>change.id===id||[...(entry.config.ontologyBinding.links||[]),...(entry.next?.links||[])].some(link=>link.id===change.id&&(link.source===id||link.target===id))),mode:'contract'}));
@@ -87,10 +87,18 @@ window.OntologyCatalog=(()=>{
     host=adapter;
     document.addEventListener('click',event=>{const element=event.target.closest('[data-action^="catalog-"]');if(!element||element.disabled||!current())return;event.preventDefault();const name=element.dataset.action.slice(8);const id=element.dataset.id;
       try{
-        if(name.startsWith('star-')){const control=name.slice(5);if(control==='select'){select(id);view().focusId=id;view().edgeId='';}if(control==='edge'){view().edgeId=id;const relation=model().links.find(entry=>entry.id===id);if(relation)window.OrbitOntology.view().selected=relation.target;}if(control==='presentation')view().presentation=element.dataset.value==='cards'?'graph':'star';if(control==='all')view().showAll=!view().showAll;if(control==='zoom')view().zoom=Math.max(.65,Math.min(1.4,(view().zoom??1)+(element.dataset.value==='in'?.1:-.1)));if(control==='fit'){const graph=document.querySelector('[data-ob-graph="catalog-star"]');const stage=graph?.querySelector('.ob-stage');view().zoom=stage?Math.max(.65,Math.min(1,(graph.clientWidth-20)/Number(stage.dataset.width))):1;}host.render();return;}
+        if(name.startsWith('star-')){
+          const control=name.slice(5);
+          if(window.OrbitStar.interact(control,id,view(),model())){
+            const target=control==='edge'?model().links.find(link=>link.id===id)?.target:view().focusId||view().centerId;
+            if(target){window.OrbitOntology.view().selected=target;view().tab='overview';if(view().editingId!==target)view().editingId='';}
+          }
+          if(control==='presentation'){view().presentation=element.dataset.value==='cards'?'graph':'star';view().zoom=null;}
+          host.render();return;
+        }
         if(name==='select')select(id);
         if(name==='map-select'){select(id);focusNode(id);}
-        if(name==='presentation'&&['graph','star','directory'].includes(element.dataset.value)){view().presentation=element.dataset.value;host.render();}
+        if(name==='presentation'&&['graph','star','directory'].includes(element.dataset.value)){view().presentation=element.dataset.value;view().zoom=null;if(view().presentation==='star')window.OrbitStar.enter(model(),view());host.render();}
         if(name==='open-directory'){view().presentation='directory';select(id);}
         if(name==='scope'&&['business','complete'].includes(element.dataset.value)){view().scope=element.dataset.value;view().focusId='';view().edgeId='';view().zoom=null;const nodes=mapData().nodes;if(nodes.length&&!nodes.some(node=>node.id===selected()?.id))window.OrbitOntology.view().selected=nodes[0].id;host.render();}
         if(name==='map-reset'){view().focusId='';view().edgeId='';host.render();}
